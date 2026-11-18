@@ -50,7 +50,6 @@ El sistema opera en tiempo real sobre una tarjeta **NVIDIA Jetson Nano (4 GB)** 
 - Documentos oficiales:
   - `Plan_DavidSoto_Imprimir (1).pdf`
   - `Reporte_Tecnico_Final_Practicas_David_Soto.docx`
-  - `Protocolo_Adquisicion_Consentimiento_Ficha.docx`
   - `Justificacion_Protocolos_por_Edad_STS_ABD_Talones_Puntas.docx`
 
 ---
