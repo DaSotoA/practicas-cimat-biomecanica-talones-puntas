@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plataforma Clínica de Análisis Biomecánico y Avance del Paciente — HRNet WholeBody</title>
+  <style>
+    :root, [data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #080d1a;
+      --bg-elev: #0f172a;
+      --panel: #131c31;
+      --panel-hover: #192540;
+      --panel-alt: #0b1324;
+      --border: #23324d;
+      --border-strong: #33496e;
+      --text: #f8fafc;
+      --text-soft: #cbd5e1;
+      --muted: #8b9bb4;
+      --primary: #38bdf8;
+      --primary-soft: rgba(56, 189, 248, 0.14);
+      --indigo: #818cf8;
+      --indigo-soft: rgba(129, 140, 248, 0.14);
+      --ok: #10b981;
+      --ok-soft: rgba(16, 185, 129, 0.15);
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.15);
+      --bad: #ef4444;
+      --bad-soft: rgba(239, 68, 68, 0.15);
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.55);
+      --grid-line: rgba(148, 163, 184, 0.12);
+    }
+
+    [data-theme="light"] {
+      color-scheme: light;
+      --bg: #f1f5f9;
+      --bg-elev: #ffffff;
+      --panel: #ffffff;
+      --panel-hover: #f8fafc;
+      --panel-alt: #f8fafc;
+      --border: #cbd5e1;
+      --border-strong: #94a3b8;
+      --text: #0f172a;
+      --text-soft: #334155;
+      --muted: #64748b;
+      --primary: #0284c7;
+      --primary-soft: rgba(2, 132, 199, 0.10);
+      --indigo: #4f46e5;
+      --indigo-soft: rgba(79, 70, 229, 0.10);
+      --ok: #059669;
+      --ok-soft: rgba(5, 150, 105, 0.12);
+      --warn: #d97706;
+      --warn-soft: rgba(217, 119, 6, 0.12);
+      --bad: #dc2626;
+      --bad-soft: rgba(220, 38, 38, 0.12);
+      --shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.08);
+      --grid-line: rgba(100, 116, 139, 0.16);
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+    .container { max-width: 1460px; margin: 0 auto; padding: 20px 24px 48px; }
+
+    /* Top Header */
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, var(--panel) 0%, var(--bg-elev) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #fff;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+      flex-shrink: 0;
+    }
+    .brand h1 { margin: 0; font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+    .brand p { margin: 3px 0 0; color: var(--muted); font-size: 12.5px; }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elev);
+      color: var(--text);
+      transition: all 0.16s ease;
+      user-select: none;
+    }
+    .btn:hover { border-color: var(--primary); background: var(--panel-hover); }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 3px 12px rgba(37, 99, 235, 0.35);
+    }
+    .btn-primary:hover { filter: brightness(1.08); border-color: transparent; }
+    .btn-soft {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+    .hidden-input { display: none; }
+
+    /* Dropzone / Status Bar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      justify-content: space-between;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+    .filter-group { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .field select, .field input {
+      background: var(--bg-elev);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 11px;
+      font-size: 13px;
+      min-width: 155px;
+      outline: none;
+    }
+    .field select:focus, .field input:focus { border-color: var(--primary); }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); display: inline-block; }
+
+    /* Patient Clinical Plan & Weekly Adherence Banner */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1.85fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1080px) { .plan-grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 14px 0;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .panel-sub { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+    .patient-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .patient-avatar {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: var(--indigo-soft);
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      color: var(--indigo);
+      font-weight: 800;
+      font-size: 17px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .meta-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+    }
+    .tag-primary { background: var(--primary-soft); color: var(--primary); border-color: rgba(56, 189, 248, 0.3); }
+    .tag-ok { background: var(--ok-soft); color: var(--ok); border-color: rgba(16, 185, 129, 0.3); }
+    .tag-warn { background: var(--warn-soft); color: var(--warn); border-color: rgba(245, 158, 11, 0.3); }
+    .tag-bad { background: var(--bad-soft); color: var(--bad); border-color: rgba(239, 68, 68, 0.3); }
+
+    .week-strip {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .day-box {
+      text-align: center;
+      padding: 7px 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-alt);
+      font-size: 11px;
+    }
+    .day-box .d-name { font-weight: 700; display: block; text-transform: uppercase; }
+    .day-box .d-st { font-size: 10px; color: var(--muted); margin-top: 2px; display: block; }
+    .day-box.assigned {
+      border-color: rgba(56, 189, 248, 0.45);
+      background: var(--primary-soft);
+    }
+    .day-box.assigned .d-name { color: var(--primary); }
+    .day-box.done {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: var(--ok-soft);
+    }
+    .day-box.done .d-name, .day-box.done .d-st { color: var(--ok); font-weight: 700; }
+
+    /* Exercise Plan Progress Cards (4 exercises) */
+    .ex-plan-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 640px) { .ex-plan-cards { grid-template-columns: 1fr; } }
+    .ex-card {
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .ex-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .ex-name { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+    .progress-track {
+      width: 100%; height: 7px;
+      background: rgba(148, 163, 184, 0.16);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #0ea5e9, #10b981);
+      transition: width 0.35s ease;
+    }
+    .ex-metrics {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    /* 6 KPI Summary Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1200px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 680px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .kpi-value {
+      font-size: 25px;
+      font-weight: 800;
+      margin: 6px 0 4px;
+      letter-spacing: -0.02em;
+    }
+    .kpi-foot { font-size: 11.5px; color: var(--muted); }
+
+    /* Charts 2x2 Grid */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1080px) { .charts-grid { grid-template-columns: 1fr; } }
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 255px;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+    }
+    .chart-wrap canvas { width: 100%; height: 100%; display: block; }
+
+    /* Diagnostic Pareto & Clinical Insights */
+    .pareto-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 255px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .pareto-item {
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .pareto-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .pareto-rec {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    /* Interactive 2D Skeleton & Phase Inspector */
+    .inspector-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1080px) { .inspector-grid { grid-template-columns: 1fr; } }
+    .pose-stage {
+      background: #070c17;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      position: relative;
+      height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .pose-stage canvas { width: 100%; height: 100%; display: block; }
+    .phase-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .phase-btn {
+      flex: 1;
+      text-align: center;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--panel-alt);
+      color: var(--text-soft);
+      transition: all 0.15s;
+    }
+    .phase-btn.active {
+      background: var(--primary);
+      color: #08101d;
+      border-color: var(--primary);
+    }
+    .lm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+      max-height: 225px;
+      overflow-y: auto;
+    }
+    .lm-item {
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 11.5px;
+    }
+    .lm-item .lm-name { font-weight: 700; color: var(--primary); }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      max-height: 520px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      font-size: 12.8px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg-elev);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 11px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr { transition: background 0.12s; cursor: pointer; }
+    tbody tr:hover { background: var(--panel-hover); }
+    tbody tr.selected-row {
+      background: var(--primary-soft);
+      outline: 1px solid rgba(56, 189, 248, 0.45);
+    }
+    .text-right { text-align: right; }
+
+    @media print {
+      .actions, .filter-bar { display: none !important; }
+      body { background: #fff; color: #000; }
+      .panel, .kpi-card { break-inside: avoid; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="appRoot">
+
+    <!-- ENCABEZADO SUPERIOR -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🩺</div>
+        <div>
+          <h1>Plataforma Clínica de Análisis Biomecánico y Avance del Paciente</h1>
+          <p>Monitoreo longitudinal HRNet WholeBody (FP16) — STS · Abducción de Cadera · Elevación de Talones · Elevación de Puntas</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <label class="btn btn-primary" title="Cargar bd_pacientes.json1, sesion_completa.json1 o archivos .jsonl/.json/.csv">
+          📂 Cargar Base de Datos (.json1 / .jsonl / .csv)
+          <input type="file" id="dbFileInput" accept=".json1,.jsonl,.json,.txt,.csv" multiple class="hidden-input" />
+        </label>
+        <label class="btn btn-soft" title="Cargar protocolos.json para actualizar los planes semanales por edad">
+          📋 Cargar protocolos.json
+          <input type="file" id="protoFileInput" accept=".json" class="hidden-input" />
+        </label>
+        <button class="btn" id="btnExportCsv" title="Exportar repeticiones filtradas a Excel / CSV">
+          📥 Exportar CSV
+        </button>
+        <button class="btn" id="btnPrint" title="Imprimir o guardar reporte clínico en PDF">
+          🖨️ Reporte PDF
+        </button>
+        <button class="btn" id="btnTheme" title="Cambiar modo Oscuro / Claro">
+          🌓 Tema
+        </button>
+      </div>
+    </header>
+
+    <!-- BARRA DE FILTROS Y ESTADO -->
+    <section class="filter-bar">
+      <div class="filter-group">
+        <div class="field">
+          <label for="fPatient">Paciente</label>
+          <select id="fPatient"><option value="ALL">Todos los pacientes</option></select>
+        </div>
+        <div class="field">
+          <label for="fExercise">Ejercicio</label>
+          <select id="fExercise">
+            <option value="ALL">Todos los ejercicios (4)</option>
+            <option value="STS">STS — Sit-to-Stand (Sentadilla)</option>
+            <option value="ABD">ABD — Abducción de Cadera</option>
+            <option value="TALONES">TALONES — Elevación de Talones</option>
+            <option value="PUNTAS">PUNTAS — Elevación de Puntas</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fSession">Sesión / Día</label>
+          <select id="fSession"><option value="ALL">Todas las sesiones</option></select>
+        </div>
+        <div class="field">
+          <label for="fResult">Calidad de Repetición</label>
+          <select id="fResult">
+            <option value="ALL">Todas (Correctas + Incorrectas)</option>
+            <option value="CORRECTA">Solo CORRECTAS</option>
+            <option value="INCORRECTA">Solo INCORRECTAS</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fSearch">Buscar diagnóstico / motivo</label>
+          <input type="search" id="fSearch" placeholder="Ej. tronco, caída, rango..." />
+        </div>
+      </div>
+
+      <div class="status-pill">
+        <span class="dot"></span>
+        <span id="statusText">Datos clínicos activos (puedes arrastrar tus archivos .json1 y protocolos.json a la ventana)</span>
+      </div>
+    </section>
+
+    <!-- FICHA CLÍNICA DEL PACIENTE Y ADHERENCIA AL PROTOCOLO POR EDAD -->
+    <section class="plan-grid">
+      <!-- Ficha del Paciente y Calendario Semanal -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>👤 Perfil Clínico y Plan Semanal por Edad</span>
+          <span class="tag tag-primary" id="pProtocolBadge">Protocolo ACSM/AHA</span>
+        </div>
+
+        <div class="patient-header">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="patient-avatar" id="pAvatar">P1</div>
+            <div>
+              <div style="font-size:17px;font-weight:800;" id="pNameTitle">Paciente_01</div>
+              <div class="panel-sub" id="pGroupSubtitle">Adulto mayor (60-69 años) — Nivel Intermedio</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="tag tag-ok" id="pProgressionBadge">▲ En evolución</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="pSessionsCount">3 sesiones registradas</div>
+          </div>
+        </div>
+
+        <div class="meta-tags" id="pMetaTags"></div>
+
+        <div style="font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;margin-top:8px;">
+          Calendario de Prescripción Semanal (Días de Ejercicio vs. Descanso)
+        </div>
+        <div class="week-strip" id="pWeekStrip"></div>
+      </div>
+
+      <!-- Avance por Ejercicio (STS, ABD, TALONES, PUNTAS) -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>📊 Avance del Paciente vs. Meta Prescrita por Ejercicio</span>
+          <span class="panel-sub" id="pPlanSummaryTxt">Cumplimiento global y calidad técnica</span>
+        </div>
+        <div class="ex-plan-cards" id="exPlanCards"></div>
+      </div>
+    </section>
+
+    <!-- 6 TARJETAS KPI -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <span class="kpi-label">Total Repeticiones</span>
+        <div class="kpi-value num" id="kpiTotal">0</div>
+        <span class="kpi-foot" id="kpiTotalSub">En filtro actual</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Índice de Calidad Técnica</span>
+        <div class="kpi-value num" style="color:var(--primary)" id="kpiRate">0%</div>
+        <span class="kpi-foot" id="kpiRateSub">Meta clínica ≥ 75%</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Ejecuciones Correctas</span>
+        <div class="kpi-value num" style="color:var(--ok)" id="kpiOk">0</div>
+        <span class="kpi-foot" id="kpiOkSub">Sin compensación postural</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Con Compensación / Falla</span>
+        <div class="kpi-value num" style="color:var(--bad)" id="kpiBad">0</div>
+        <span class="kpi-foot" id="kpiBadSub">Requieren retroalimentación</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Ángulo Pico Medio (ROM)</span>
+        <div class="kpi-value num" style="color:var(--indigo)" id="kpiRom">0°</div>
+        <span class="kpi-foot" id="kpiRomSub">Amplitud articular máxima</span>
+      </div>
+      <div class="kpi-card">
+        <span class="kpi-label">Tiempo Medio / Control Exc.</span>
+        <div class="kpi-value num" id="kpiDur">0.0 s</div>
+        <span class="kpi-foot" id="kpiDurSub">Fase de bajada controlada</span>
+      </div>
+    </section>
+
+    <!-- 4 PANELES DE GRÁFICAS CLÍNICAS PARA VER EL AVANCE -->
+    <section class="charts-grid">
+      <!-- Gráfica 1: Curva de Evolución de Ángulo Pico (ROM) e Inclinación de Tronco -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>📈 Evolución de Amplitud Articular (ROM Pico) y Estabilidad de Tronco</span>
+          <span class="panel-sub">Haz clic en cualquier punto para inspeccionar la repetición</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartRomTrend"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 2: Progreso entre Sesiones / Días (% Calidad y Volumen) -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>🗓️ Progreso Longitudinal por Sesión y Ejercicio (% Acierto y Volumen)</span>
+          <span class="panel-sub">Comparativa de avance clínico entre sesiones</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartSessionProgress"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 3: Desglose de Fases Biomecánicas (Subida, Sostenimiento, Bajada) -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>⏱️ Ritmo Biomecánico por Fase (Subida · Cima/Sostén · Bajada Excéntrica)</span>
+          <span class="panel-sub">Duración en milisegundos (ms) por repetición</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="chartPhaseDurations"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 4: Diagnóstico Clínico de Fallas y Recomendaciones -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>🩺 Diagnóstico de Compensaciones Biomecánicas y Recomendaciones</span>
+          <span class="panel-sub">Análisis automático de causas de error</span>
+        </div>
+        <div class="pareto-list" id="paretoContainer"></div>
+      </div>
+    </section>
+
+    <!-- INSPECTOR ANATÓMICO 2D DE ESQUELETO Y FASES DE LA REPETICIÓN -->
+    <section class="inspector-grid">
+      <div class="panel">
+        <div class="panel-title">
+          <span>🦴 Reconstrucción Anatómica 2D (HRNet)</span>
+          <button class="btn btn-soft" id="btnPlayPose" style="padding:4px 10px;font-size:11.5px;">▶ Animar Fases</button>
+        </div>
+        <div class="pose-stage">
+          <canvas id="poseCanvas"></canvas>
+        </div>
+        <div class="phase-pills" id="phasePills"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span id="inspectorTitle">🎯 Telemetría Biomecánica de la Repetición Seleccionada</span>
+          <span class="tag tag-primary" id="inspectorPhaseBadge">Fase: PEAK</span>
+        </div>
+        <div id="inspectorSummary" class="meta-tags" style="margin-bottom:10px;"></div>
+        <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">
+          Coordenadas 2D y Confianza de Landmarks en la Fase Activa
+        </div>
+        <div class="lm-grid" id="landmarksGrid"></div>
+      </div>
+    </section>
+
+    <!-- TABLA DETALLADA DE REPETICIONES -->
+    <section class="panel">
+      <div class="panel-title">
+        <span>📋 Historial Clínico Detallado de Repeticiones Evaluadas</span>
+        <span class="panel-sub" id="tableCountInfo">Selecciona cualquier fila para ver su cinemática y esqueleto 2D</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Paciente</th>
+              <th>Sesión / Día</th>
+              <th>Ejercicio</th>
+              <th>Serie / Rep</th>
+              <th>Resultado</th>
+              <th>Diagnóstico Clínico / Motivo</th>
+              <th class="text-right">Ángulo Pico (ROM)</th>
+              <th class="text-right">Tronco Máx</th>
+              <th class="text-right">Vel. Bajada</th>
+              <th class="text-right">Subida</th>
+              <th class="text-right">Cima</th>
+              <th class="text-right">Bajada</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="repsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DATOS EMBEBIDOS POR DEFECTO (protocolos.json + bd_pacientes.json1)
+    // =========================================================================
+    let PROTOCOLS_DATA = {"configuracion_general": {"descripcion": "Protocolos clinicos unificados (STS, Abduccion de Cadera, Elevacion de Talones y Elevacion de Puntas) adaptados por edad y dia de la semana.", "contar_solo_repeticiones_correctas": false, "auto_cerrar_al_completar_todo": false}, "protocolos_por_edad": {"adulto_18_59": {"edad_min": 18, "edad_max": 59, "nivel": "Avanzado", "etiqueta": "Adulto joven / mediana edad (18-59 anos)", "frecuencia_semanal": 3, "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 60, "abd_peak_deg": 45.0, "sts_trunk_max_deg": 30.0, "abd_trunk_max_deg": 15.0, "ejercicios": {"STS": {"series": 3, "repeticiones": 10}, "ABD": {"series": 3, "repeticiones": 10}, "TALONES": {"series": 3, "repeticiones": 15}, "PUNTAS": {"series": 3, "repeticiones": 15}}}, "adulto_mayor_60_69": {"edad_min": 60, "edad_max": 69, "nivel": "Intermedio", "etiqueta": "Adulto mayor (60-69 anos)", "frecuencia_semanal": 3, "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 60, "abd_peak_deg": 40.0, "sts_trunk_max_deg": 30.0, "abd_trunk_max_deg": 15.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 10}, "ABD": {"series": 2, "repeticiones": 10}, "TALONES": {"series": 3, "repeticiones": 12}, "PUNTAS": {"series": 3, "repeticiones": 12}}}, "adulto_mayor_70_79": {"edad_min": 70, "edad_max": 79, "nivel": "Basico-Intermedio", "etiqueta": "Adulto mayor (70-79 anos)", "frecuencia_semanal": 3, "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 90, "abd_peak_deg": 40.0, "sts_trunk_max_deg": 30.0, "abd_trunk_max_deg": 15.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 8}, "ABD": {"series": 2, "repeticiones": 8}, "TALONES": {"series": 2, "repeticiones": 10}, "PUNTAS": {"series": 2, "repeticiones": 10}}}, "adulto_mayor_80_plus": {"edad_min": 80, "edad_max": 120, "nivel": "Basico", "etiqueta": "Adulto mayor longevo / fragil (80+ anos)", "frecuencia_semanal": 2, "dias_asignados": ["lunes", "jueves"], "descanso_entre_series_s": 90, "abd_peak_deg": 35.0, "sts_trunk_max_deg": 30.0, "abd_trunk_max_deg": 15.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 6}, "ABD": {"series": 2, "repeticiones": 6}, "TALONES": {"series": 2, "repeticiones": 10}, "PUNTAS": {"series": 2, "repeticiones": 10}}}}, "pacientes": {"Paciente_01": {"edad": 65, "nivel": "Intermedio", "grupo_protocolo": "adulto_mayor_60_69", "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 60, "abd_peak_deg": 40.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 10}, "ABD": {"series": 2, "repeticiones": 10}, "TALONES": {"series": 3, "repeticiones": 12}, "PUNTAS": {"series": 3, "repeticiones": 12}}, "progreso_diario": {}}, "Juan_Perez": {"edad": 45, "nivel": "Avanzado", "grupo_protocolo": "adulto_18_59", "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 60, "abd_peak_deg": 45.0, "ejercicios": {"STS": {"series": 3, "repeticiones": 10}, "ABD": {"series": 3, "repeticiones": 10}, "TALONES": {"series": 3, "repeticiones": 15}, "PUNTAS": {"series": 3, "repeticiones": 15}}, "progreso_diario": {}}, "Maria_Lopez": {"edad": 74, "nivel": "Basico-Intermedio", "grupo_protocolo": "adulto_mayor_70_79", "dias_asignados": ["lunes", "miercoles", "viernes"], "descanso_entre_series_s": 90, "abd_peak_deg": 40.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 8}, "ABD": {"series": 2, "repeticiones": 8}, "TALONES": {"series": 2, "repeticiones": 10}, "PUNTAS": {"series": 2, "repeticiones": 10}}, "progreso_diario": {}}, "Roberto_Gomez": {"edad": 83, "nivel": "Basico", "grupo_protocolo": "adulto_mayor_80_plus", "dias_asignados": ["lunes", "jueves"], "descanso_entre_series_s": 90, "abd_peak_deg": 35.0, "ejercicios": {"STS": {"series": 2, "repeticiones": 6}, "ABD": {"series": 2, "repeticiones": 6}, "TALONES": {"series": 2, "repeticiones": 10}, "PUNTAS": {"series": 2, "repeticiones": 10}}, "progreso_diario": {}}}};
+    const DEFAULT_DB_DOCS = [{"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212126316, "delta_t_ms": 0.0, "frame_id": 262, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 9.4, "angulo_abduccion_d": 38.0, "velocidad_angular_cadera": 107.6, "inclinacion_tronco": 6.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 444.1, "y": 160.5, "conf": 0.89}, {"punto": "hombro_d", "x": 372.4, "y": 159.4, "conf": 0.86}, {"punto": "cadera_i", "x": 417.5, "y": 267.6, "conf": 0.72}, {"punto": "cadera_d", "x": 374.0, "y": 266.1, "conf": 0.82}, {"punto": "rodilla_i", "x": 404.0, "y": 353.4, "conf": 0.75}, {"punto": "rodilla_d", "x": 327.1, "y": 333.3, "conf": 0.76}, {"punto": "tobillo_i", "x": 392.7, "y": 427.8, "conf": 0.79}, {"punto": "tobillo_d", "x": 279.9, "y": 386.8, "conf": 0.76}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212126625, "delta_t_ms": 309.0, "frame_id": 263, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 7.6, "angulo_abduccion_d": 53.5, "velocidad_angular_cadera": 74.3, "inclinacion_tronco": 13.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 449.9, "y": 161.0, "conf": 0.87}, {"punto": "hombro_d", "x": 378.1, "y": 158.3, "conf": 0.89}, {"punto": "cadera_i", "x": 412.7, "y": 267.4, "conf": 0.74}, {"punto": "cadera_d", "x": 365.9, "y": 262.0, "conf": 0.72}, {"punto": "rodilla_i", "x": 399.0, "y": 348.2, "conf": 0.83}, {"punto": "rodilla_d", "x": 305.1, "y": 312.9, "conf": 0.87}, {"punto": "tobillo_i", "x": 391.0, "y": 428.2, "conf": 0.77}, {"punto": "tobillo_d", "x": 244.0, "y": 351.5, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212127482, "delta_t_ms": 857.0, "frame_id": 267, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 8.0, "angulo_abduccion_d": 33.2, "velocidad_angular_cadera": -79.6, "inclinacion_tronco": 12.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 451.4, "y": 159.2, "conf": 0.87}, {"punto": "hombro_d", "x": 379.0, "y": 155.6, "conf": 0.89}, {"punto": "cadera_i", "x": 411.9, "y": 277.1, "conf": 0.74}, {"punto": "cadera_d", "x": 369.0, "y": 258.4, "conf": 0.68}, {"punto": "rodilla_i", "x": 399.6, "y": 355.5, "conf": 0.82}, {"punto": "rodilla_d", "x": 321.2, "y": 329.3, "conf": 0.82}, {"punto": "tobillo_i", "x": 391.4, "y": 428.3, "conf": 0.78}, {"punto": "tobillo_d", "x": 273.6, "y": 387.4, "conf": 0.76}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212128135, "delta_t_ms": 653.0, "frame_id": 270, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 1, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_abduccion_i": 4.8, "angulo_abduccion_d": 1.7, "velocidad_angular_cadera": -26.6, "inclinacion_tronco": 3.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 428.5, "y": 154.9, "conf": 0.86}, {"punto": "hombro_d", "x": 356.5, "y": 158.9, "conf": 0.86}, {"punto": "cadera_i", "x": 404.4, "y": 276.7, "conf": 0.65}, {"punto": "cadera_d", "x": 367.8, "y": 267.5, "conf": 0.73}, {"punto": "rodilla_i", "x": 401.1, "y": 353.0, "conf": 0.76}, {"punto": "rodilla_d", "x": 363.8, "y": 347.2, "conf": 0.79}, {"punto": "tobillo_i", "x": 393.1, "y": 427.6, "conf": 0.74}, {"punto": "tobillo_d", "x": 363.0, "y": 425.4, "conf": 0.67}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212137414, "delta_t_ms": 0.0, "frame_id": 317, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 35.8, "angulo_abduccion_d": 9.2, "velocidad_angular_cadera": 121.0, "inclinacion_tronco": 5.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 398.5, "y": 160.3, "conf": 0.91}, {"punto": "hombro_d", "x": 327.5, "y": 156.6, "conf": 0.84}, {"punto": "cadera_i", "x": 395.9, "y": 266.0, "conf": 0.7}, {"punto": "cadera_d", "x": 349.9, "y": 275.6, "conf": 0.75}, {"punto": "rodilla_i", "x": 437.1, "y": 326.9, "conf": 0.73}, {"punto": "rodilla_d", "x": 362.9, "y": 353.7, "conf": 0.73}, {"punto": "tobillo_i", "x": 487.8, "y": 389.9, "conf": 0.73}, {"punto": "tobillo_d", "x": 373.5, "y": 427.0, "conf": 0.7}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212137601, "delta_t_ms": 187.0, "frame_id": 318, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 52.6, "angulo_abduccion_d": 8.3, "velocidad_angular_cadera": 119.3, "inclinacion_tronco": 9.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 394.8, "y": 159.5, "conf": 0.92}, {"punto": "hombro_d", "x": 320.5, "y": 155.9, "conf": 0.87}, {"punto": "cadera_i", "x": 400.5, "y": 265.8, "conf": 0.64}, {"punto": "cadera_d", "x": 350.8, "y": 273.8, "conf": 0.73}, {"punto": "rodilla_i", "x": 454.0, "y": 311.4, "conf": 0.72}, {"punto": "rodilla_d", "x": 366.6, "y": 347.9, "conf": 0.76}, {"punto": "tobillo_i", "x": 509.4, "y": 351.6, "conf": 0.72}, {"punto": "tobillo_d", "x": 372.8, "y": 427.2, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212138761, "delta_t_ms": 1160.0, "frame_id": 324, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 32.8, "angulo_abduccion_d": 8.4, "velocidad_angular_cadera": -84.7, "inclinacion_tronco": 10.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 388.9, "y": 157.6, "conf": 0.84}, {"punto": "hombro_d", "x": 315.7, "y": 155.4, "conf": 0.88}, {"punto": "cadera_i", "x": 396.0, "y": 262.3, "conf": 0.68}, {"punto": "cadera_d", "x": 350.4, "y": 273.6, "conf": 0.72}, {"punto": "rodilla_i", "x": 433.5, "y": 323.4, "conf": 0.7}, {"punto": "rodilla_d", "x": 364.5, "y": 347.9, "conf": 0.69}, {"punto": "tobillo_i", "x": 483.3, "y": 388.1, "conf": 0.74}, {"punto": "tobillo_d", "x": 372.7, "y": 424.0, "conf": 0.71}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212139768, "delta_t_ms": 1007.0, "frame_id": 329, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 2, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_abduccion_i": 3.2, "angulo_abduccion_d": 8.8, "velocidad_angular_cadera": -9.3, "inclinacion_tronco": 5.0}, "landmarks_2d": [{"punto": "hombro_i", "x": 397.8, "y": 161.3, "conf": 0.85}, {"punto": "hombro_d", "x": 322.7, "y": 156.0, "conf": 0.89}, {"punto": "cadera_i", "x": 389.9, "y": 272.0, "conf": 0.72}, {"punto": "cadera_d", "x": 349.8, "y": 276.1, "conf": 0.76}, {"punto": "rodilla_i", "x": 395.3, "y": 352.1, "conf": 0.76}, {"punto": "rodilla_d", "x": 359.2, "y": 356.6, "conf": 0.75}, {"punto": "tobillo_i", "x": 398.5, "y": 428.5, "conf": 0.7}, {"punto": "tobillo_d", "x": 370.4, "y": 428.7, "conf": 0.7}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212142990, "delta_t_ms": 0.0, "frame_id": 345, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 32.9, "angulo_abduccion_d": 8.8, "velocidad_angular_cadera": 97.8, "inclinacion_tronco": 6.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 397.2, "y": 159.5, "conf": 0.94}, {"punto": "hombro_d", "x": 327.8, "y": 156.5, "conf": 0.85}, {"punto": "cadera_i", "x": 397.8, "y": 268.4, "conf": 0.74}, {"punto": "cadera_d", "x": 351.3, "y": 275.1, "conf": 0.72}, {"punto": "rodilla_i", "x": 433.9, "y": 333.2, "conf": 0.78}, {"punto": "rodilla_d", "x": 363.3, "y": 353.3, "conf": 0.75}, {"punto": "tobillo_i", "x": 473.7, "y": 390.0, "conf": 0.69}, {"punto": "tobillo_d", "x": 373.5, "y": 428.5, "conf": 0.75}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212143175, "delta_t_ms": 185.0, "frame_id": 346, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 46.0, "angulo_abduccion_d": 7.8, "velocidad_angular_cadera": 90.2, "inclinacion_tronco": 7.9}, "landmarks_2d": [{"punto": "hombro_i", "x": 395.9, "y": 160.1, "conf": 0.9}, {"punto": "hombro_d", "x": 324.9, "y": 154.9, "conf": 0.87}, {"punto": "cadera_i", "x": 398.2, "y": 260.5, "conf": 0.75}, {"punto": "cadera_d", "x": 350.9, "y": 269.8, "conf": 0.67}, {"punto": "rodilla_i", "x": 448.9, "y": 313.6, "conf": 0.68}, {"punto": "rodilla_d", "x": 365.9, "y": 348.4, "conf": 0.74}, {"punto": "tobillo_i", "x": 505.6, "y": 364.9, "conf": 0.83}, {"punto": "tobillo_d", "x": 372.2, "y": 428.0, "conf": 0.74}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212144243, "delta_t_ms": 1068.0, "frame_id": 351, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 19.4, "angulo_abduccion_d": 5.8, "velocidad_angular_cadera": -141.5, "inclinacion_tronco": 7.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.4, "y": 158.8, "conf": 0.91}, {"punto": "hombro_d", "x": 329.2, "y": 153.8, "conf": 0.86}, {"punto": "cadera_i", "x": 401.6, "y": 265.2, "conf": 0.72}, {"punto": "cadera_d", "x": 358.4, "y": 274.8, "conf": 0.71}, {"punto": "rodilla_i", "x": 424.9, "y": 333.1, "conf": 0.71}, {"punto": "rodilla_d", "x": 371.2, "y": 349.1, "conf": 0.8}, {"punto": "tobillo_i", "x": 445.7, "y": 408.8, "conf": 0.79}, {"punto": "tobillo_d", "x": 372.9, "y": 422.2, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212144424, "delta_t_ms": 181.0, "frame_id": 352, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 3, "resultado": "INCORRECTA", "motivo": "Pierna cae bruscamente: controla el descenso"}, "cinematica": {"angulo_abduccion_i": -1.6, "angulo_abduccion_d": 5.2, "velocidad_angular_cadera": -154.6, "inclinacion_tronco": 5.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 409.7, "y": 159.3, "conf": 0.91}, {"punto": "hombro_d", "x": 334.7, "y": 155.2, "conf": 0.86}, {"punto": "cadera_i", "x": 406.8, "y": 268.1, "conf": 0.68}, {"punto": "cadera_d", "x": 358.3, "y": 276.0, "conf": 0.78}, {"punto": "rodilla_i", "x": 407.8, "y": 345.3, "conf": 0.73}, {"punto": "rodilla_d", "x": 369.7, "y": 349.2, "conf": 0.8}, {"punto": "tobillo_i", "x": 405.7, "y": 421.7, "conf": 0.75}, {"punto": "tobillo_d", "x": 370.4, "y": 425.9, "conf": 0.72}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212149435, "delta_t_ms": 0.0, "frame_id": 375, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 13.7, "angulo_abduccion_d": 31.4, "velocidad_angular_cadera": 75.2, "inclinacion_tronco": 6.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 453.2, "y": 162.2, "conf": 0.89}, {"punto": "hombro_d", "x": 377.9, "y": 152.0, "conf": 0.88}, {"punto": "cadera_i", "x": 427.1, "y": 276.3, "conf": 0.78}, {"punto": "cadera_d", "x": 378.0, "y": 266.7, "conf": 0.76}, {"punto": "rodilla_i", "x": 410.5, "y": 361.7, "conf": 0.79}, {"punto": "rodilla_d", "x": 336.6, "y": 338.4, "conf": 0.76}, {"punto": "tobillo_i", "x": 391.5, "y": 427.5, "conf": 0.74}, {"punto": "tobillo_d", "x": 296.2, "y": 396.0, "conf": 0.76}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212151465, "delta_t_ms": 2030.0, "frame_id": 385, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 10.2, "angulo_abduccion_d": 34.9, "velocidad_angular_cadera": -20.8, "inclinacion_tronco": 15.3}, "landmarks_2d": [{"punto": "hombro_i", "x": 466.8, "y": 162.7, "conf": 0.87}, {"punto": "hombro_d", "x": 392.2, "y": 145.1, "conf": 0.9}, {"punto": "cadera_i", "x": 421.4, "y": 278.3, "conf": 0.75}, {"punto": "cadera_d", "x": 372.5, "y": 258.2, "conf": 0.75}, {"punto": "rodilla_i", "x": 404.5, "y": 358.3, "conf": 0.8}, {"punto": "rodilla_d", "x": 328.4, "y": 316.2, "conf": 0.71}, {"punto": "tobillo_i", "x": 394.6, "y": 427.1, "conf": 0.78}, {"punto": "tobillo_d", "x": 273.3, "y": 375.5, "conf": 0.76}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212153089, "delta_t_ms": 1624.0, "frame_id": 393, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 4, "resultado": "INCORRECTA", "motivo": "Tronco inclinado (>15 deg lateral); Rango insuficiente (pico 45 < 45 deg)"}, "cinematica": {"angulo_abduccion_i": 9.6, "angulo_abduccion_d": 4.7, "velocidad_angular_cadera": -4.4, "inclinacion_tronco": 7.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 450.5, "y": 163.7, "conf": 0.85}, {"punto": "hombro_d", "x": 377.2, "y": 152.4, "conf": 0.87}, {"punto": "cadera_i", "x": 420.5, "y": 277.4, "conf": 0.77}, {"punto": "cadera_d", "x": 378.9, "y": 269.1, "conf": 0.77}, {"punto": "rodilla_i", "x": 409.7, "y": 359.5, "conf": 0.82}, {"punto": "rodilla_d", "x": 373.7, "y": 354.9, "conf": 0.73}, {"punto": "tobillo_i", "x": 396.1, "y": 427.4, "conf": 0.75}, {"punto": "tobillo_d", "x": 366.8, "y": 428.8, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212155952, "delta_t_ms": 0.0, "frame_id": 406, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 13.5, "angulo_abduccion_d": 24.0, "velocidad_angular_cadera": 59.3, "inclinacion_tronco": 2.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 441.2, "y": 154.2, "conf": 0.84}, {"punto": "hombro_d", "x": 363.8, "y": 157.5, "conf": 0.85}, {"punto": "cadera_i", "x": 428.7, "y": 277.4, "conf": 0.78}, {"punto": "cadera_d", "x": 383.9, "y": 271.6, "conf": 0.81}, {"punto": "rodilla_i", "x": 411.5, "y": 360.0, "conf": 0.79}, {"punto": "rodilla_d", "x": 360.3, "y": 345.1, "conf": 0.83}, {"punto": "tobillo_i", "x": 394.1, "y": 427.8, "conf": 0.77}, {"punto": "tobillo_d", "x": 325.7, "y": 408.6, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212157167, "delta_t_ms": 1215.0, "frame_id": 412, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 11.9, "angulo_abduccion_d": 46.3, "velocidad_angular_cadera": 8.5, "inclinacion_tronco": 8.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 454.4, "y": 158.8, "conf": 0.8}, {"punto": "hombro_d", "x": 378.7, "y": 154.3, "conf": 0.9}, {"punto": "cadera_i", "x": 425.8, "y": 275.2, "conf": 0.73}, {"punto": "cadera_d", "x": 374.3, "y": 261.9, "conf": 0.73}, {"punto": "rodilla_i", "x": 405.9, "y": 358.2, "conf": 0.77}, {"punto": "rodilla_d", "x": 322.4, "y": 315.7, "conf": 0.8}, {"punto": "tobillo_i", "x": 395.3, "y": 425.2, "conf": 0.73}, {"punto": "tobillo_d", "x": 261.7, "y": 354.7, "conf": 0.7}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212157805, "delta_t_ms": 638.0, "frame_id": 415, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 11.0, "angulo_abduccion_d": 39.4, "velocidad_angular_cadera": -22.1, "inclinacion_tronco": 10.9}, "landmarks_2d": [{"punto": "hombro_i", "x": 458.3, "y": 159.9, "conf": 0.81}, {"punto": "hombro_d", "x": 383.2, "y": 150.9, "conf": 0.85}, {"punto": "cadera_i", "x": 423.9, "y": 275.9, "conf": 0.73}, {"punto": "cadera_d", "x": 373.5, "y": 261.0, "conf": 0.74}, {"punto": "rodilla_i", "x": 406.5, "y": 360.1, "conf": 0.79}, {"punto": "rodilla_d", "x": 325.9, "y": 316.2, "conf": 0.74}, {"punto": "tobillo_i", "x": 394.3, "y": 427.2, "conf": 0.79}, {"punto": "tobillo_d", "x": 266.6, "y": 371.2, "conf": 0.72}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212159943, "delta_t_ms": 2138.0, "frame_id": 425, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 5, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_abduccion_i": 9.3, "angulo_abduccion_d": 4.3, "velocidad_angular_cadera": 1.9, "inclinacion_tronco": 6.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 447.9, "y": 159.3, "conf": 0.82}, {"punto": "hombro_d", "x": 374.6, "y": 154.5, "conf": 0.86}, {"punto": "cadera_i", "x": 419.2, "y": 275.6, "conf": 0.75}, {"punto": "cadera_d", "x": 381.0, "y": 266.3, "conf": 0.79}, {"punto": "rodilla_i", "x": 409.7, "y": 358.4, "conf": 0.78}, {"punto": "rodilla_d", "x": 378.8, "y": 348.9, "conf": 0.76}, {"punto": "tobillo_i", "x": 395.8, "y": 427.5, "conf": 0.78}, {"punto": "tobillo_d", "x": 370.1, "y": 424.6, "conf": 0.6}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212162948, "delta_t_ms": 0.0, "frame_id": 440, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 23.2, "angulo_abduccion_d": 8.0, "velocidad_angular_cadera": 70.0, "inclinacion_tronco": 4.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 413.1, "y": 153.0, "conf": 0.86}, {"punto": "hombro_d", "x": 333.5, "y": 152.9, "conf": 0.88}, {"punto": "cadera_i", "x": 407.6, "y": 272.0, "conf": 0.74}, {"punto": "cadera_d", "x": 356.0, "y": 277.4, "conf": 0.82}, {"punto": "rodilla_i", "x": 425.9, "y": 340.8, "conf": 0.72}, {"punto": "rodilla_d", "x": 363.9, "y": 352.4, "conf": 0.75}, {"punto": "tobillo_i", "x": 462.2, "y": 405.6, "conf": 0.71}, {"punto": "tobillo_d", "x": 376.2, "y": 427.9, "conf": 0.74}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212163717, "delta_t_ms": 769.0, "frame_id": 444, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 45.1, "angulo_abduccion_d": 6.8, "velocidad_angular_cadera": 16.9, "inclinacion_tronco": 9.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 400.5, "y": 151.8, "conf": 0.88}, {"punto": "hombro_d", "x": 326.3, "y": 148.9, "conf": 0.89}, {"punto": "cadera_i", "x": 406.0, "y": 260.9, "conf": 0.68}, {"punto": "cadera_d", "x": 358.8, "y": 278.3, "conf": 0.79}, {"punto": "rodilla_i", "x": 447.1, "y": 308.5, "conf": 0.74}, {"punto": "rodilla_d", "x": 369.1, "y": 350.2, "conf": 0.77}, {"punto": "tobillo_i", "x": 506.0, "y": 349.4, "conf": 0.71}, {"punto": "tobillo_d", "x": 375.4, "y": 429.4, "conf": 0.69}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212164766, "delta_t_ms": 1049.0, "frame_id": 449, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 36.9, "angulo_abduccion_d": 7.3, "velocidad_angular_cadera": -24.2, "inclinacion_tronco": 10.6}, "landmarks_2d": [{"punto": "hombro_i", "x": 397.8, "y": 151.0, "conf": 0.91}, {"punto": "hombro_d", "x": 320.9, "y": 151.4, "conf": 0.89}, {"punto": "cadera_i", "x": 402.5, "y": 260.9, "conf": 0.77}, {"punto": "cadera_d", "x": 358.9, "y": 278.7, "conf": 0.82}, {"punto": "rodilla_i", "x": 442.3, "y": 318.1, "conf": 0.75}, {"punto": "rodilla_d", "x": 367.4, "y": 351.7, "conf": 0.73}, {"punto": "tobillo_i", "x": 491.5, "y": 374.2, "conf": 0.73}, {"punto": "tobillo_d", "x": 376.4, "y": 425.6, "conf": 0.69}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212166789, "delta_t_ms": 2023.0, "frame_id": 459, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 6, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_abduccion_i": -0.4, "angulo_abduccion_d": 7.2, "velocidad_angular_cadera": -39.9, "inclinacion_tronco": 6.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 403.7, "y": 151.9, "conf": 0.86}, {"punto": "hombro_d", "x": 325.1, "y": 154.7, "conf": 0.87}, {"punto": "cadera_i", "x": 400.3, "y": 271.6, "conf": 0.74}, {"punto": "cadera_d", "x": 354.4, "y": 278.1, "conf": 0.74}, {"punto": "rodilla_i", "x": 402.5, "y": 357.4, "conf": 0.73}, {"punto": "rodilla_d", "x": 363.8, "y": 360.5, "conf": 0.73}, {"punto": "tobillo_i", "x": 400.4, "y": 425.8, "conf": 0.74}, {"punto": "tobillo_d", "x": 372.2, "y": 427.3, "conf": 0.79}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212173695, "delta_t_ms": 0.0, "frame_id": 494, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 9.9, "angulo_abduccion_d": 31.6, "velocidad_angular_cadera": 104.3, "inclinacion_tronco": 9.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 453.0, "y": 163.2, "conf": 0.87}, {"punto": "hombro_d", "x": 377.4, "y": 153.4, "conf": 0.91}, {"punto": "cadera_i", "x": 420.7, "y": 277.0, "conf": 0.73}, {"punto": "cadera_d", "x": 374.5, "y": 267.2, "conf": 0.78}, {"punto": "rodilla_i", "x": 406.1, "y": 359.0, "conf": 0.75}, {"punto": "rodilla_d", "x": 334.2, "y": 339.3, "conf": 0.85}, {"punto": "tobillo_i", "x": 395.5, "y": 427.3, "conf": 0.74}, {"punto": "tobillo_d", "x": 290.8, "y": 396.9, "conf": 0.83}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212174532, "delta_t_ms": 837.0, "frame_id": 498, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 7.8, "angulo_abduccion_d": 30.6, "velocidad_angular_cadera": -58.8, "inclinacion_tronco": 14.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 460.1, "y": 162.8, "conf": 0.86}, {"punto": "hombro_d", "x": 384.4, "y": 150.1, "conf": 0.88}, {"punto": "cadera_i", "x": 415.6, "y": 279.7, "conf": 0.77}, {"punto": "cadera_d", "x": 370.6, "y": 263.4, "conf": 0.74}, {"punto": "rodilla_i", "x": 402.9, "y": 360.1, "conf": 0.81}, {"punto": "rodilla_d", "x": 329.5, "y": 328.8, "conf": 0.79}, {"punto": "tobillo_i", "x": 394.9, "y": 428.0, "conf": 0.79}, {"punto": "tobillo_d", "x": 289.1, "y": 391.9, "conf": 0.75}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212175557, "delta_t_ms": 1025.0, "frame_id": 503, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 7, "resultado": "INCORRECTA", "motivo": "Tronco inclinado (>15 deg lateral); Rango insuficiente (pico 43 < 45 deg)"}, "cinematica": {"angulo_abduccion_i": 9.4, "angulo_abduccion_d": 0.7, "velocidad_angular_cadera": -9.8, "inclinacion_tronco": 8.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 449.5, "y": 164.4, "conf": 0.84}, {"punto": "hombro_d", "x": 377.8, "y": 154.5, "conf": 0.89}, {"punto": "cadera_i", "x": 418.0, "y": 278.3, "conf": 0.78}, {"punto": "cadera_d", "x": 379.2, "y": 270.7, "conf": 0.75}, {"punto": "rodilla_i", "x": 408.1, "y": 357.5, "conf": 0.82}, {"punto": "rodilla_d", "x": 375.7, "y": 349.5, "conf": 0.78}, {"punto": "tobillo_i", "x": 394.7, "y": 427.9, "conf": 0.76}, {"punto": "tobillo_d", "x": 377.4, "y": 426.7, "conf": 0.69}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212176931, "delta_t_ms": 0.0, "frame_id": 508, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 8.6, "angulo_abduccion_d": 39.5, "velocidad_angular_cadera": 64.2, "inclinacion_tronco": 16.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 459.7, "y": 164.7, "conf": 0.89}, {"punto": "hombro_d", "x": 390.6, "y": 151.9, "conf": 0.88}, {"punto": "cadera_i", "x": 417.7, "y": 277.5, "conf": 0.81}, {"punto": "cadera_d", "x": 368.4, "y": 259.1, "conf": 0.7}, {"punto": "rodilla_i", "x": 404.4, "y": 356.7, "conf": 0.78}, {"punto": "rodilla_d", "x": 319.4, "y": 322.4, "conf": 0.78}, {"punto": "tobillo_i", "x": 396.7, "y": 427.2, "conf": 0.78}, {"punto": "tobillo_d", "x": 265.8, "y": 371.7, "conf": 0.75}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212177320, "delta_t_ms": 389.0, "frame_id": 509, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 6.3, "angulo_abduccion_d": 52.1, "velocidad_angular_cadera": 35.3, "inclinacion_tronco": 21.0}, "landmarks_2d": [{"punto": "hombro_i", "x": 466.0, "y": 165.4, "conf": 0.89}, {"punto": "hombro_d", "x": 395.0, "y": 149.5, "conf": 0.89}, {"punto": "cadera_i", "x": 411.7, "y": 277.9, "conf": 0.75}, {"punto": "cadera_d", "x": 366.4, "y": 252.6, "conf": 0.75}, {"punto": "rodilla_i", "x": 398.2, "y": 348.4, "conf": 0.76}, {"punto": "rodilla_d", "x": 300.9, "y": 286.6, "conf": 0.77}, {"punto": "tobillo_i", "x": 396.4, "y": 427.6, "conf": 0.74}, {"punto": "tobillo_d", "x": 224.0, "y": 324.3, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212178382, "delta_t_ms": 1062.0, "frame_id": 514, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 6.2, "angulo_abduccion_d": 34.7, "velocidad_angular_cadera": -35.1, "inclinacion_tronco": 18.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 462.0, "y": 165.4, "conf": 0.86}, {"punto": "hombro_d", "x": 392.8, "y": 148.9, "conf": 0.9}, {"punto": "cadera_i", "x": 412.9, "y": 278.5, "conf": 0.79}, {"punto": "cadera_d", "x": 366.7, "y": 255.2, "conf": 0.8}, {"punto": "rodilla_i", "x": 399.0, "y": 353.6, "conf": 0.73}, {"punto": "rodilla_d", "x": 319.8, "y": 316.8, "conf": 0.72}, {"punto": "tobillo_i", "x": 397.7, "y": 427.9, "conf": 0.7}, {"punto": "tobillo_d", "x": 266.6, "y": 374.7, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212179473, "delta_t_ms": 1091.0, "frame_id": 519, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 8, "resultado": "INCORRECTA", "motivo": "Rango insuficiente (pico 43 < 45 deg); Tronco inclinado (>15 deg lateral)"}, "cinematica": {"angulo_abduccion_i": 5.9, "angulo_abduccion_d": -0.8, "velocidad_angular_cadera": -19.9, "inclinacion_tronco": 7.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 440.5, "y": 163.4, "conf": 0.85}, {"punto": "hombro_d", "x": 371.3, "y": 154.6, "conf": 0.88}, {"punto": "cadera_i", "x": 411.0, "y": 278.0, "conf": 0.75}, {"punto": "cadera_d", "x": 372.7, "y": 268.5, "conf": 0.78}, {"punto": "rodilla_i", "x": 406.3, "y": 354.3, "conf": 0.72}, {"punto": "rodilla_d", "x": 371.9, "y": 348.5, "conf": 0.76}, {"punto": "tobillo_i", "x": 396.8, "y": 428.2, "conf": 0.77}, {"punto": "tobillo_d", "x": 372.0, "y": 423.8, "conf": 0.67}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212180779, "delta_t_ms": 0.0, "frame_id": 525, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 10.9, "angulo_abduccion_d": 24.8, "velocidad_angular_cadera": 84.5, "inclinacion_tronco": 7.3}, "landmarks_2d": [{"punto": "hombro_i", "x": 448.0, "y": 159.9, "conf": 0.88}, {"punto": "hombro_d", "x": 376.2, "y": 155.2, "conf": 0.91}, {"punto": "cadera_i", "x": 420.7, "y": 278.3, "conf": 0.7}, {"punto": "cadera_d", "x": 376.6, "y": 268.6, "conf": 0.82}, {"punto": "rodilla_i", "x": 408.8, "y": 358.4, "conf": 0.75}, {"punto": "rodilla_d", "x": 351.1, "y": 340.1, "conf": 0.79}, {"punto": "tobillo_i", "x": 394.5, "y": 428.7, "conf": 0.77}, {"punto": "tobillo_d", "x": 315.8, "y": 406.3, "conf": 0.79}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212181230, "delta_t_ms": 451.0, "frame_id": 527, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 8.9, "angulo_abduccion_d": 47.7, "velocidad_angular_cadera": 46.2, "inclinacion_tronco": 13.6}, "landmarks_2d": [{"punto": "hombro_i", "x": 455.9, "y": 158.3, "conf": 0.87}, {"punto": "hombro_d", "x": 383.2, "y": 154.7, "conf": 0.91}, {"punto": "cadera_i", "x": 418.1, "y": 278.0, "conf": 0.76}, {"punto": "cadera_d", "x": 370.5, "y": 256.0, "conf": 0.78}, {"punto": "rodilla_i", "x": 404.6, "y": 354.8, "conf": 0.79}, {"punto": "rodilla_d", "x": 316.6, "y": 312.9, "conf": 0.82}, {"punto": "tobillo_i", "x": 395.9, "y": 427.7, "conf": 0.8}, {"punto": "tobillo_d", "x": 258.5, "y": 361.6, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212182044, "delta_t_ms": 814.0, "frame_id": 531, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 9.9, "angulo_abduccion_d": 38.1, "velocidad_angular_cadera": -36.8, "inclinacion_tronco": 14.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 459.1, "y": 159.2, "conf": 0.87}, {"punto": "hombro_d", "x": 388.5, "y": 151.4, "conf": 0.89}, {"punto": "cadera_i", "x": 417.5, "y": 277.7, "conf": 0.8}, {"punto": "cadera_d", "x": 373.0, "y": 260.3, "conf": 0.74}, {"punto": "rodilla_i", "x": 404.0, "y": 360.6, "conf": 0.82}, {"punto": "rodilla_d", "x": 322.8, "y": 324.5, "conf": 0.71}, {"punto": "tobillo_i", "x": 394.0, "y": 428.1, "conf": 0.82}, {"punto": "tobillo_d", "x": 273.4, "y": 378.0, "conf": 0.75}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212183073, "delta_t_ms": 1029.0, "frame_id": 536, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 9, "resultado": "INCORRECTA", "motivo": "Tronco inclinado (>15 deg lateral)"}, "cinematica": {"angulo_abduccion_i": 11.3, "angulo_abduccion_d": 4.0, "velocidad_angular_cadera": -46.4, "inclinacion_tronco": 7.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 451.5, "y": 162.8, "conf": 0.86}, {"punto": "hombro_d", "x": 379.5, "y": 152.5, "conf": 0.9}, {"punto": "cadera_i", "x": 424.6, "y": 276.4, "conf": 0.71}, {"punto": "cadera_d", "x": 378.9, "y": 268.0, "conf": 0.75}, {"punto": "rodilla_i", "x": 409.7, "y": 358.3, "conf": 0.79}, {"punto": "rodilla_d", "x": 371.6, "y": 346.7, "conf": 0.8}, {"punto": "tobillo_i", "x": 395.8, "y": 426.4, "conf": 0.77}, {"punto": "tobillo_d", "x": 369.7, "y": 421.2, "conf": 0.63}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212185225, "delta_t_ms": 0.0, "frame_id": 546, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 20.2, "angulo_abduccion_d": 6.4, "velocidad_angular_cadera": 70.9, "inclinacion_tronco": 4.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 412.7, "y": 154.5, "conf": 0.87}, {"punto": "hombro_d", "x": 342.0, "y": 151.4, "conf": 0.91}, {"punto": "cadera_i", "x": 409.9, "y": 271.0, "conf": 0.72}, {"punto": "cadera_d", "x": 361.5, "y": 278.7, "conf": 0.79}, {"punto": "rodilla_i", "x": 430.9, "y": 347.1, "conf": 0.78}, {"punto": "rodilla_d", "x": 369.3, "y": 353.1, "conf": 0.74}, {"punto": "tobillo_i", "x": 457.6, "y": 415.1, "conf": 0.67}, {"punto": "tobillo_d", "x": 376.4, "y": 424.5, "conf": 0.69}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212186421, "delta_t_ms": 1196.0, "frame_id": 552, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 52.7, "angulo_abduccion_d": 4.4, "velocidad_angular_cadera": 63.1, "inclinacion_tronco": 6.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 413.5, "y": 156.4, "conf": 0.92}, {"punto": "hombro_d", "x": 343.1, "y": 146.5, "conf": 0.92}, {"punto": "cadera_i", "x": 415.2, "y": 262.5, "conf": 0.8}, {"punto": "cadera_d", "x": 366.7, "y": 276.1, "conf": 0.77}, {"punto": "rodilla_i", "x": 451.9, "y": 310.7, "conf": 0.74}, {"punto": "rodilla_d", "x": 371.6, "y": 352.0, "conf": 0.82}, {"punto": "tobillo_i", "x": 510.3, "y": 359.1, "conf": 0.75}, {"punto": "tobillo_d", "x": 376.7, "y": 423.7, "conf": 0.72}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212186627, "delta_t_ms": 206.0, "frame_id": 553, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 28.8, "angulo_abduccion_d": 3.9, "velocidad_angular_cadera": -96.4, "inclinacion_tronco": 5.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 418.5, "y": 154.1, "conf": 0.9}, {"punto": "hombro_d", "x": 348.0, "y": 147.9, "conf": 0.91}, {"punto": "cadera_i", "x": 419.2, "y": 262.1, "conf": 0.79}, {"punto": "cadera_d", "x": 367.6, "y": 271.5, "conf": 0.77}, {"punto": "rodilla_i", "x": 446.1, "y": 328.5, "conf": 0.74}, {"punto": "rodilla_d", "x": 373.9, "y": 350.8, "conf": 0.79}, {"punto": "tobillo_i", "x": 476.8, "y": 393.4, "conf": 0.82}, {"punto": "tobillo_d", "x": 377.9, "y": 424.0, "conf": 0.72}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212187020, "delta_t_ms": 393.0, "frame_id": 555, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"repeticion": 10, "resultado": "INCORRECTA", "motivo": "Pierna cae bruscamente: controla el descenso"}, "cinematica": {"angulo_abduccion_i": -2.3, "angulo_abduccion_d": 0.4, "velocidad_angular_cadera": -79.5, "inclinacion_tronco": -0.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 436.0, "y": 159.6, "conf": 0.88}, {"punto": "hombro_d", "x": 366.1, "y": 150.6, "conf": 0.88}, {"punto": "cadera_i", "x": 425.9, "y": 274.5, "conf": 0.75}, {"punto": "cadera_d", "x": 377.5, "y": 278.3, "conf": 0.74}, {"punto": "rodilla_i", "x": 418.9, "y": 354.1, "conf": 0.75}, {"punto": "rodilla_d", "x": 376.4, "y": 353.4, "conf": 0.75}, {"punto": "tobillo_i", "x": 416.2, "y": 428.3, "conf": 0.8}, {"punto": "tobillo_d", "x": 376.2, "y": 427.4, "conf": 0.7}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212207370, "delta_t_ms": 0.0, "frame_id": 659, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 134.7, "velocidad_angular_rodilla": 2.0, "inclinacion_tronco": 18.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 501.4, "y": 185.2, "conf": 0.75}, {"punto": "hombro_d", "x": 466.6, "y": 176.4, "conf": 0.77}, {"punto": "cadera_i", "x": 473.9, "y": 283.9, "conf": 0.73}, {"punto": "cadera_d", "x": 446.0, "y": 283.9, "conf": 0.69}, {"punto": "rodilla_i", "x": 490.2, "y": 350.1, "conf": 0.79}, {"punto": "rodilla_d", "x": 468.6, "y": 354.8, "conf": 0.72}, {"punto": "tobillo_i", "x": 461.4, "y": 419.3, "conf": 0.63}, {"punto": "tobillo_d", "x": 454.9, "y": 426.1, "conf": 0.58}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212210027, "delta_t_ms": 2657.0, "frame_id": 673, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 1, "resultado": "INCORRECTA", "motivo": "Espalda muy inclinada (>30 deg); Levantada incompleta (no llegaste a 165 deg)"}, "cinematica": {"angulo_rodilla": 90.4, "velocidad_angular_rodilla": -86.2, "inclinacion_tronco": 17.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 491.9, "y": 241.9, "conf": 0.7}, {"punto": "hombro_d", "x": 456.8, "y": 232.3, "conf": 0.79}, {"punto": "cadera_i", "x": 457.2, "y": 312.3, "conf": 0.65}, {"punto": "cadera_d", "x": 436.0, "y": 314.1, "conf": 0.68}, {"punto": "rodilla_i", "x": 497.8, "y": 345.0, "conf": 0.69}, {"punto": "rodilla_d", "x": 491.1, "y": 345.2, "conf": 0.71}, {"punto": "tobillo_i", "x": 476.3, "y": 418.2, "conf": 0.39}, {"punto": "tobillo_d", "x": 469.4, "y": 421.3, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212217877, "delta_t_ms": 0.0, "frame_id": 710, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 109.8, "velocidad_angular_rodilla": 41.3, "inclinacion_tronco": 25.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 507.8, "y": 205.8, "conf": 0.75}, {"punto": "hombro_d", "x": 471.8, "y": 200.4, "conf": 0.8}, {"punto": "cadera_i", "x": 470.0, "y": 293.6, "conf": 0.63}, {"punto": "cadera_d", "x": 440.0, "y": 287.5, "conf": 0.69}, {"punto": "rodilla_i", "x": 499.6, "y": 346.4, "conf": 0.77}, {"punto": "rodilla_d", "x": 491.5, "y": 346.9, "conf": 0.83}, {"punto": "tobillo_i", "x": 479.5, "y": 417.8, "conf": 0.54}, {"punto": "tobillo_d", "x": 475.1, "y": 424.2, "conf": 0.66}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212229814, "delta_t_ms": 11937.0, "frame_id": 769, "ejercicio": "STS", "estado": "STANDING", "cinematica": {"angulo_rodilla": 168.1, "velocidad_angular_rodilla": 20.4, "inclinacion_tronco": 11.3}, "landmarks_2d": [{"punto": "hombro_i", "x": 501.2, "y": 158.8, "conf": 0.83}, {"punto": "hombro_d", "x": 469.9, "y": 160.7, "conf": 0.84}, {"punto": "cadera_i", "x": 505.6, "y": 266.8, "conf": 0.66}, {"punto": "cadera_d", "x": 487.3, "y": 267.0, "conf": 0.71}, {"punto": "rodilla_i", "x": 505.3, "y": 339.8, "conf": 0.79}, {"punto": "rodilla_d", "x": 489.8, "y": 344.6, "conf": 0.75}, {"punto": "tobillo_i", "x": 485.2, "y": 414.6, "conf": 0.65}, {"punto": "tobillo_d", "x": 478.5, "y": 425.0, "conf": 0.78}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212232672, "delta_t_ms": 2858.0, "frame_id": 784, "ejercicio": "STS", "estado": "LOWERING", "cinematica": {"angulo_rodilla": 141.6, "velocidad_angular_rodilla": -75.9, "inclinacion_tronco": 9.3}, "landmarks_2d": [{"punto": "hombro_i", "x": 504.2, "y": 180.8, "conf": 0.86}, {"punto": "hombro_d", "x": 472.0, "y": 178.2, "conf": 0.86}, {"punto": "cadera_i", "x": 486.6, "y": 277.7, "conf": 0.71}, {"punto": "cadera_d", "x": 457.7, "y": 276.7, "conf": 0.74}, {"punto": "rodilla_i", "x": 488.3, "y": 345.3, "conf": 0.53}, {"punto": "rodilla_d", "x": 490.2, "y": 345.1, "conf": 0.77}, {"punto": "tobillo_i", "x": 488.8, "y": 416.5, "conf": 0.53}, {"punto": "tobillo_d", "x": 479.7, "y": 425.9, "conf": 0.72}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212234322, "delta_t_ms": 1650.0, "frame_id": 792, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 2, "resultado": "INCORRECTA", "motivo": "Espalda muy inclinada (>30 deg)"}, "cinematica": {"angulo_rodilla": 93.2, "velocidad_angular_rodilla": -26.6, "inclinacion_tronco": 18.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 422.8, "y": 240.2, "conf": 0.76}, {"punto": "hombro_d", "x": 384.5, "y": 235.8, "conf": 0.81}, {"punto": "cadera_i", "x": 436.7, "y": 319.7, "conf": 0.58}, {"punto": "cadera_d", "x": 405.8, "y": 329.1, "conf": 0.59}, {"punto": "rodilla_i", "x": 492.9, "y": 337.1, "conf": 0.78}, {"punto": "rodilla_d", "x": 478.9, "y": 343.1, "conf": 0.69}, {"punto": "tobillo_i", "x": 492.6, "y": 418.3, "conf": 0.63}, {"punto": "tobillo_d", "x": 479.2, "y": 426.0, "conf": 0.62}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212245045, "delta_t_ms": 0.0, "frame_id": 845, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 108.5, "velocidad_angular_rodilla": 47.5, "inclinacion_tronco": 10.0}, "landmarks_2d": [{"punto": "hombro_i", "x": 410.3, "y": 234.3, "conf": 0.61}, {"punto": "hombro_d", "x": 406.7, "y": 235.8, "conf": 0.74}, {"punto": "cadera_i", "x": 440.4, "y": 323.0, "conf": 0.51}, {"punto": "cadera_d", "x": 424.1, "y": 332.5, "conf": 0.67}, {"punto": "rodilla_i", "x": 509.0, "y": 341.5, "conf": 0.71}, {"punto": "rodilla_d", "x": 494.2, "y": 353.3, "conf": 0.55}, {"punto": "tobillo_i", "x": 492.7, "y": 418.5, "conf": 0.51}, {"punto": "tobillo_d", "x": 496.0, "y": 423.3, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212256140, "delta_t_ms": 11095.0, "frame_id": 904, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 1, "resultado": "INCORRECTA", "motivo": "Espalda muy inclinada (>30 deg); Levantada incompleta (no llegaste a 165 deg)"}, "cinematica": {"angulo_rodilla": 93.1, "velocidad_angular_rodilla": -31.8, "inclinacion_tronco": 0.6}, "landmarks_2d": [{"punto": "hombro_i", "x": 438.0, "y": 231.8, "conf": 0.63}, {"punto": "hombro_d", "x": 429.3, "y": 234.3, "conf": 0.79}, {"punto": "cadera_i", "x": 439.8, "y": 323.0, "conf": 0.54}, {"punto": "cadera_d", "x": 427.9, "y": 330.9, "conf": 0.66}, {"punto": "rodilla_i", "x": 511.7, "y": 341.3, "conf": 0.65}, {"punto": "rodilla_d", "x": 504.1, "y": 348.5, "conf": 0.6}, {"punto": "tobillo_i", "x": 490.1, "y": 420.8, "conf": 0.46}, {"punto": "tobillo_d", "x": 493.2, "y": 419.5, "conf": 0.61}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212257254, "delta_t_ms": 0.0, "frame_id": 909, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 141.4, "velocidad_angular_rodilla": 225.3, "inclinacion_tronco": 1.9}, "landmarks_2d": [{"punto": "hombro_i", "x": 497.5, "y": 167.6, "conf": 0.74}, {"punto": "hombro_d", "x": 479.8, "y": 170.9, "conf": 0.84}, {"punto": "cadera_i", "x": 490.4, "y": 270.1, "conf": 0.63}, {"punto": "cadera_d", "x": 475.3, "y": 270.0, "conf": 0.78}, {"punto": "rodilla_i", "x": 512.5, "y": 345.5, "conf": 0.72}, {"punto": "rodilla_d", "x": 506.8, "y": 347.0, "conf": 0.63}, {"punto": "tobillo_i", "x": 485.1, "y": 419.9, "conf": 0.55}, {"punto": "tobillo_d", "x": 483.4, "y": 421.3, "conf": 0.7}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212277097, "delta_t_ms": 19843.0, "frame_id": 1009, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 2, "resultado": "INCORRECTA", "motivo": "Levantada incompleta (no llegaste a 165 deg)"}, "cinematica": {"angulo_rodilla": 92.3, "velocidad_angular_rodilla": -24.1, "inclinacion_tronco": 17.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 409.8, "y": 235.5, "conf": 0.66}, {"punto": "hombro_d", "x": 396.0, "y": 236.4, "conf": 0.81}, {"punto": "cadera_i", "x": 433.8, "y": 323.0, "conf": 0.52}, {"punto": "cadera_d", "x": 425.6, "y": 332.1, "conf": 0.66}, {"punto": "rodilla_i", "x": 508.7, "y": 342.3, "conf": 0.63}, {"punto": "rodilla_d", "x": 507.5, "y": 347.5, "conf": 0.66}, {"punto": "tobillo_i", "x": 486.1, "y": 419.6, "conf": 0.44}, {"punto": "tobillo_d", "x": 491.5, "y": 421.6, "conf": 0.67}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212283686, "delta_t_ms": 0.0, "frame_id": 1043, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 108.0, "velocidad_angular_rodilla": 79.8, "inclinacion_tronco": 26.7}, "landmarks_2d": [{"punto": "hombro_i", "x": 480.2, "y": 214.3, "conf": 0.54}, {"punto": "hombro_d", "x": 480.5, "y": 213.9, "conf": 0.8}, {"punto": "cadera_i", "x": 458.6, "y": 302.8, "conf": 0.58}, {"punto": "cadera_d", "x": 441.7, "y": 307.9, "conf": 0.61}, {"punto": "rodilla_i", "x": 505.9, "y": 344.6, "conf": 0.49}, {"punto": "rodilla_d", "x": 508.8, "y": 345.1, "conf": 0.71}, {"punto": "tobillo_i", "x": 477.8, "y": 419.8, "conf": 0.56}, {"punto": "tobillo_d", "x": 486.6, "y": 422.5, "conf": 0.58}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212288804, "delta_t_ms": 5118.0, "frame_id": 1070, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 1, "resultado": "INCORRECTA", "motivo": "Levantada incompleta (no llegaste a 165 deg)"}, "cinematica": {"angulo_rodilla": 92.0, "velocidad_angular_rodilla": -54.7, "inclinacion_tronco": 11.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 413.1, "y": 231.0, "conf": 0.63}, {"punto": "hombro_d", "x": 406.7, "y": 235.8, "conf": 0.78}, {"punto": "cadera_i", "x": 439.5, "y": 321.3, "conf": 0.53}, {"punto": "cadera_d", "x": 425.4, "y": 328.9, "conf": 0.7}, {"punto": "rodilla_i", "x": 502.3, "y": 340.5, "conf": 0.57}, {"punto": "rodilla_d", "x": 504.5, "y": 343.6, "conf": 0.73}, {"punto": "tobillo_i", "x": 484.3, "y": 419.4, "conf": 0.45}, {"punto": "tobillo_d", "x": 486.7, "y": 424.5, "conf": 0.67}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212295342, "delta_t_ms": 0.0, "frame_id": 1103, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 113.5, "velocidad_angular_rodilla": 65.5, "inclinacion_tronco": 25.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 471.1, "y": 228.0, "conf": 0.61}, {"punto": "hombro_d", "x": 478.4, "y": 229.5, "conf": 0.81}, {"punto": "cadera_i", "x": 423.6, "y": 313.5, "conf": 0.42}, {"punto": "cadera_d", "x": 433.8, "y": 320.9, "conf": 0.61}, {"punto": "rodilla_i", "x": 498.3, "y": 343.1, "conf": 0.49}, {"punto": "rodilla_d", "x": 494.6, "y": 352.1, "conf": 0.6}, {"punto": "tobillo_i", "x": 482.2, "y": 421.3, "conf": 0.46}, {"punto": "tobillo_d", "x": 493.0, "y": 420.6, "conf": 0.62}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212296271, "delta_t_ms": 929.0, "frame_id": 1108, "ejercicio": "STS", "estado": "STANDING", "cinematica": {"angulo_rodilla": 167.8, "velocidad_angular_rodilla": 76.1, "inclinacion_tronco": 0.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 486.1, "y": 152.9, "conf": 0.58}, {"punto": "hombro_d", "x": 499.7, "y": 157.4, "conf": 0.85}, {"punto": "cadera_i", "x": 494.3, "y": 263.2, "conf": 0.55}, {"punto": "cadera_d", "x": 501.1, "y": 266.8, "conf": 0.76}, {"punto": "rodilla_i", "x": 516.9, "y": 345.4, "conf": 0.68}, {"punto": "rodilla_d", "x": 504.1, "y": 344.8, "conf": 0.72}, {"punto": "tobillo_i", "x": 488.5, "y": 419.8, "conf": 0.61}, {"punto": "tobillo_d", "x": 487.1, "y": 423.5, "conf": 0.71}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212299095, "delta_t_ms": 2824.0, "frame_id": 1123, "ejercicio": "STS", "estado": "LOWERING", "cinematica": {"angulo_rodilla": 152.4, "velocidad_angular_rodilla": -11.1, "inclinacion_tronco": 1.3}, "landmarks_2d": [{"punto": "hombro_i", "x": 487.5, "y": 154.7, "conf": 0.7}, {"punto": "hombro_d", "x": 489.0, "y": 160.7, "conf": 0.87}, {"punto": "cadera_i", "x": 490.9, "y": 265.4, "conf": 0.53}, {"punto": "cadera_d", "x": 486.6, "y": 266.3, "conf": 0.71}, {"punto": "rodilla_i", "x": 511.1, "y": 344.2, "conf": 0.7}, {"punto": "rodilla_d", "x": 506.5, "y": 346.8, "conf": 0.8}, {"punto": "tobillo_i", "x": 490.8, "y": 418.1, "conf": 0.58}, {"punto": "tobillo_d", "x": 487.1, "y": 422.5, "conf": 0.73}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212301627, "delta_t_ms": 2532.0, "frame_id": 1136, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 2, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_rodilla": 93.9, "velocidad_angular_rodilla": -99.6, "inclinacion_tronco": 16.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 399.0, "y": 225.3, "conf": 0.51}, {"punto": "hombro_d", "x": 396.6, "y": 229.6, "conf": 0.79}, {"punto": "cadera_i", "x": 433.3, "y": 325.4, "conf": 0.45}, {"punto": "cadera_d", "x": 425.6, "y": 330.8, "conf": 0.65}, {"punto": "rodilla_i", "x": 506.9, "y": 340.8, "conf": 0.47}, {"punto": "rodilla_d", "x": 506.3, "y": 345.7, "conf": 0.74}, {"punto": "tobillo_i", "x": 484.4, "y": 418.6, "conf": 0.54}, {"punto": "tobillo_d", "x": 494.5, "y": 423.5, "conf": 0.57}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212305933, "delta_t_ms": 0.0, "frame_id": 1157, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 108.4, "velocidad_angular_rodilla": 48.1, "inclinacion_tronco": 33.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 497.4, "y": 213.7, "conf": 0.57}, {"punto": "hombro_d", "x": 488.4, "y": 211.5, "conf": 0.83}, {"punto": "cadera_i", "x": 466.4, "y": 298.9, "conf": 0.58}, {"punto": "cadera_d", "x": 439.9, "y": 301.2, "conf": 0.72}, {"punto": "rodilla_i", "x": 505.5, "y": 346.8, "conf": 0.48}, {"punto": "rodilla_d", "x": 509.4, "y": 344.4, "conf": 0.82}, {"punto": "tobillo_i", "x": 482.7, "y": 420.6, "conf": 0.47}, {"punto": "tobillo_d", "x": 488.7, "y": 423.2, "conf": 0.63}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212308852, "delta_t_ms": 2919.0, "frame_id": 1173, "ejercicio": "STS", "estado": "STANDING", "cinematica": {"angulo_rodilla": 167.2, "velocidad_angular_rodilla": 9.3, "inclinacion_tronco": 4.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 499.8, "y": 153.2, "conf": 0.66}, {"punto": "hombro_d", "x": 505.0, "y": 158.3, "conf": 0.83}, {"punto": "cadera_i", "x": 514.0, "y": 261.8, "conf": 0.58}, {"punto": "cadera_d", "x": 512.8, "y": 263.7, "conf": 0.74}, {"punto": "rodilla_i", "x": 518.7, "y": 341.6, "conf": 0.63}, {"punto": "rodilla_d", "x": 508.3, "y": 346.8, "conf": 0.63}, {"punto": "tobillo_i", "x": 487.4, "y": 418.2, "conf": 0.56}, {"punto": "tobillo_d", "x": 487.0, "y": 424.8, "conf": 0.67}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212310139, "delta_t_ms": 1287.0, "frame_id": 1180, "ejercicio": "STS", "estado": "LOWERING", "cinematica": {"angulo_rodilla": 154.3, "velocidad_angular_rodilla": -31.4, "inclinacion_tronco": 1.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 497.8, "y": 157.4, "conf": 0.64}, {"punto": "hombro_d", "x": 500.8, "y": 157.7, "conf": 0.89}, {"punto": "cadera_i", "x": 503.0, "y": 265.6, "conf": 0.6}, {"punto": "cadera_d", "x": 504.0, "y": 269.8, "conf": 0.76}, {"punto": "rodilla_i", "x": 515.2, "y": 341.8, "conf": 0.67}, {"punto": "rodilla_d", "x": 514.9, "y": 345.5, "conf": 0.69}, {"punto": "tobillo_i", "x": 493.5, "y": 420.6, "conf": 0.57}, {"punto": "tobillo_d", "x": 490.8, "y": 426.2, "conf": 0.79}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212313085, "delta_t_ms": 2946.0, "frame_id": 1196, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 3, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_rodilla": 91.3, "velocidad_angular_rodilla": -85.0, "inclinacion_tronco": 14.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 408.3, "y": 228.2, "conf": 0.52}, {"punto": "hombro_d", "x": 405.4, "y": 234.3, "conf": 0.79}, {"punto": "cadera_i", "x": 439.7, "y": 324.9, "conf": 0.46}, {"punto": "cadera_d", "x": 431.2, "y": 332.1, "conf": 0.65}, {"punto": "rodilla_i", "x": 512.6, "y": 345.9, "conf": 0.51}, {"punto": "rodilla_d", "x": 514.0, "y": 348.8, "conf": 0.75}, {"punto": "tobillo_i", "x": 491.5, "y": 422.9, "conf": 0.42}, {"punto": "tobillo_d", "x": 496.3, "y": 427.5, "conf": 0.63}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212315704, "delta_t_ms": 0.0, "frame_id": 1210, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 109.4, "velocidad_angular_rodilla": 60.8, "inclinacion_tronco": 14.9}, "landmarks_2d": [{"punto": "hombro_i", "x": 416.2, "y": 233.7, "conf": 0.6}, {"punto": "hombro_d", "x": 405.0, "y": 234.3, "conf": 0.8}, {"punto": "cadera_i", "x": 441.2, "y": 326.4, "conf": 0.51}, {"punto": "cadera_d", "x": 431.6, "y": 332.3, "conf": 0.65}, {"punto": "rodilla_i", "x": 512.3, "y": 345.7, "conf": 0.61}, {"punto": "rodilla_d", "x": 510.7, "y": 349.1, "conf": 0.52}, {"punto": "tobillo_i", "x": 494.1, "y": 423.2, "conf": 0.44}, {"punto": "tobillo_d", "x": 502.4, "y": 425.9, "conf": 0.61}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212317870, "delta_t_ms": 2166.0, "frame_id": 1222, "ejercicio": "STS", "estado": "STANDING", "cinematica": {"angulo_rodilla": 167.8, "velocidad_angular_rodilla": 53.2, "inclinacion_tronco": 0.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 503.2, "y": 157.9, "conf": 0.63}, {"punto": "hombro_d", "x": 507.8, "y": 160.4, "conf": 0.83}, {"punto": "cadera_i", "x": 502.6, "y": 267.0, "conf": 0.58}, {"punto": "cadera_d", "x": 506.0, "y": 268.6, "conf": 0.73}, {"punto": "rodilla_i", "x": 520.4, "y": 345.2, "conf": 0.62}, {"punto": "rodilla_d", "x": 513.1, "y": 346.5, "conf": 0.72}, {"punto": "tobillo_i", "x": 490.2, "y": 420.4, "conf": 0.59}, {"punto": "tobillo_d", "x": 499.7, "y": 425.4, "conf": 0.71}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212320181, "delta_t_ms": 2311.0, "frame_id": 1234, "ejercicio": "STS", "estado": "LOWERING", "cinematica": {"angulo_rodilla": 152.0, "velocidad_angular_rodilla": -38.1, "inclinacion_tronco": 8.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 498.3, "y": 163.0, "conf": 0.62}, {"punto": "hombro_d", "x": 504.4, "y": 163.7, "conf": 0.92}, {"punto": "cadera_i", "x": 488.8, "y": 272.1, "conf": 0.58}, {"punto": "cadera_d", "x": 486.7, "y": 272.1, "conf": 0.69}, {"punto": "rodilla_i", "x": 513.1, "y": 346.5, "conf": 0.68}, {"punto": "rodilla_d", "x": 511.5, "y": 350.5, "conf": 0.71}, {"punto": "tobillo_i", "x": 495.8, "y": 421.1, "conf": 0.55}, {"punto": "tobillo_d", "x": 497.0, "y": 427.4, "conf": 0.68}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212321425, "delta_t_ms": 1244.0, "frame_id": 1241, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 4, "resultado": "INCORRECTA", "motivo": "Espalda muy inclinada (>30 deg)"}, "cinematica": {"angulo_rodilla": 93.9, "velocidad_angular_rodilla": -17.1, "inclinacion_tronco": 13.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 406.9, "y": 228.5, "conf": 0.54}, {"punto": "hombro_d", "x": 411.2, "y": 233.9, "conf": 0.82}, {"punto": "cadera_i", "x": 434.0, "y": 325.6, "conf": 0.42}, {"punto": "cadera_d", "x": 431.3, "y": 332.9, "conf": 0.67}, {"punto": "rodilla_i", "x": 509.8, "y": 344.3, "conf": 0.57}, {"punto": "rodilla_d", "x": 513.4, "y": 345.7, "conf": 0.69}, {"punto": "tobillo_i", "x": 492.0, "y": 423.5, "conf": 0.51}, {"punto": "tobillo_d", "x": 507.1, "y": 423.3, "conf": 0.66}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212323885, "delta_t_ms": 0.0, "frame_id": 1254, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 111.5, "velocidad_angular_rodilla": 75.7, "inclinacion_tronco": 24.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 475.0, "y": 231.4, "conf": 0.55}, {"punto": "hombro_d", "x": 472.5, "y": 229.3, "conf": 0.82}, {"punto": "cadera_i", "x": 450.5, "y": 318.9, "conf": 0.58}, {"punto": "cadera_d", "x": 433.7, "y": 325.1, "conf": 0.57}, {"punto": "rodilla_i", "x": 509.6, "y": 344.5, "conf": 0.7}, {"punto": "rodilla_d", "x": 510.0, "y": 347.6, "conf": 0.6}, {"punto": "tobillo_i", "x": 494.3, "y": 423.5, "conf": 0.5}, {"punto": "tobillo_d", "x": 500.0, "y": 426.3, "conf": 0.63}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "sesion": "20261028_122747", "timestamp_ms": 1793212328437, "delta_t_ms": 4552.0, "frame_id": 1278, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"repeticion": 5, "resultado": "INCORRECTA", "motivo": "Levantada incompleta (no llegaste a 165 deg)"}, "cinematica": {"angulo_rodilla": 92.1, "velocidad_angular_rodilla": -44.8, "inclinacion_tronco": 11.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 412.5, "y": 230.7, "conf": 0.54}, {"punto": "hombro_d", "x": 413.4, "y": 233.0, "conf": 0.82}, {"punto": "cadera_i", "x": 442.2, "y": 326.7, "conf": 0.44}, {"punto": "cadera_d", "x": 431.8, "y": 330.8, "conf": 0.66}, {"punto": "rodilla_i", "x": 509.4, "y": 344.5, "conf": 0.52}, {"punto": "rodilla_d", "x": 508.3, "y": 346.4, "conf": 0.77}, {"punto": "tobillo_i", "x": 489.3, "y": 421.3, "conf": 0.47}, {"punto": "tobillo_d", "x": 495.1, "y": 426.9, "conf": 0.65}], "edad": 65, "dia_semana": "lunes", "abd_rango_min_deg": 40.0}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212201000, "delta_t_ms": 0.0, "frame_id": 510, "ejercicio": "TALONES", "estado": "UP", "cinematica": {"angulo_pie": 9.8, "velocidad_angular": 38.4, "angulo_rodilla": 171.2, "inclinacion_tronco": 4.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 152.0, "conf": 0.91}, {"punto": "hombro_d", "x": 388.0, "y": 154.0, "conf": 0.88}, {"punto": "cadera_i", "x": 400.0, "y": 268.0, "conf": 0.86}, {"punto": "cadera_d", "x": 390.0, "y": 270.0, "conf": 0.84}, {"punto": "rodilla_i", "x": 403.0, "y": 352.0, "conf": 0.89}, {"punto": "rodilla_d", "x": 394.0, "y": 354.0, "conf": 0.85}, {"punto": "tobillo_i", "x": 398.0, "y": 422.0, "conf": 0.88}, {"punto": "tobillo_d", "x": 391.0, "y": 426.0, "conf": 0.82}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.84}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.8}, {"punto": "talon_i", "x": 384.0, "y": 426.0, "conf": 0.86}, {"punto": "puntaG_d", "x": 434.0, "y": 440.0, "conf": 0.79}, {"punto": "puntaP_d", "x": 430.0, "y": 441.0, "conf": 0.77}, {"punto": "talon_d", "x": 379.0, "y": 434.0, "conf": 0.81}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212201420, "delta_t_ms": 420.0, "frame_id": 514, "ejercicio": "TALONES", "estado": "PEAK", "cinematica": {"angulo_pie": 15.6, "velocidad_angular": 12.1, "angulo_rodilla": 172.5, "inclinacion_tronco": 4.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 146.0, "conf": 0.92}, {"punto": "hombro_d", "x": 388.0, "y": 148.0, "conf": 0.89}, {"punto": "cadera_i", "x": 401.0, "y": 262.0, "conf": 0.87}, {"punto": "cadera_d", "x": 391.0, "y": 264.0, "conf": 0.85}, {"punto": "rodilla_i", "x": 404.0, "y": 346.0, "conf": 0.9}, {"punto": "rodilla_d", "x": 395.0, "y": 348.0, "conf": 0.86}, {"punto": "tobillo_i", "x": 400.0, "y": 414.0, "conf": 0.89}, {"punto": "tobillo_d", "x": 392.0, "y": 418.0, "conf": 0.84}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.86}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.82}, {"punto": "talon_i", "x": 385.0, "y": 418.0, "conf": 0.88}, {"punto": "puntaG_d", "x": 434.0, "y": 440.0, "conf": 0.81}, {"punto": "puntaP_d", "x": 430.0, "y": 441.0, "conf": 0.79}, {"punto": "talon_d", "x": 380.0, "y": 424.0, "conf": 0.83}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212202010, "delta_t_ms": 590.0, "frame_id": 519, "ejercicio": "TALONES", "estado": "DOWN", "cinematica": {"angulo_pie": 6.4, "velocidad_angular": -18.5, "angulo_rodilla": 170.8, "inclinacion_tronco": 4.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 151.0, "conf": 0.91}, {"punto": "hombro_d", "x": 388.0, "y": 153.0, "conf": 0.88}, {"punto": "cadera_i", "x": 400.0, "y": 267.0, "conf": 0.86}, {"punto": "cadera_d", "x": 390.0, "y": 269.0, "conf": 0.84}, {"punto": "rodilla_i", "x": 403.0, "y": 351.0, "conf": 0.89}, {"punto": "rodilla_d", "x": 394.0, "y": 353.0, "conf": 0.85}, {"punto": "tobillo_i", "x": 398.0, "y": 421.0, "conf": 0.88}, {"punto": "tobillo_d", "x": 391.0, "y": 425.0, "conf": 0.82}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 431.0, "conf": 0.87}, {"punto": "puntaG_d", "x": 434.0, "y": 440.0, "conf": 0.8}, {"punto": "puntaP_d", "x": 430.0, "y": 441.0, "conf": 0.78}, {"punto": "talon_d", "x": 379.0, "y": 434.0, "conf": 0.82}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212202490, "delta_t_ms": 480.0, "frame_id": 523, "ejercicio": "TALONES", "estado": "REST", "evaluacion": {"serie": "1/3", "rep_en_serie": "1/12", "repeticion": 1, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_pie": 1.2, "velocidad_angular": -14.2, "angulo_rodilla": 171.0, "inclinacion_tronco": 3.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 154.0, "conf": 0.91}, {"punto": "hombro_d", "x": 388.0, "y": 156.0, "conf": 0.88}, {"punto": "cadera_i", "x": 400.0, "y": 270.0, "conf": 0.86}, {"punto": "cadera_d", "x": 390.0, "y": 272.0, "conf": 0.84}, {"punto": "rodilla_i", "x": 403.0, "y": 354.0, "conf": 0.89}, {"punto": "rodilla_d", "x": 394.0, "y": 356.0, "conf": 0.85}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "tobillo_d", "x": 391.0, "y": 428.0, "conf": 0.82}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.87}, {"punto": "puntaG_d", "x": 434.0, "y": 440.0, "conf": 0.8}, {"punto": "puntaP_d", "x": 430.0, "y": 441.0, "conf": 0.78}, {"punto": "talon_d", "x": 379.0, "y": 439.0, "conf": 0.82}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212205000, "delta_t_ms": 0.0, "frame_id": 540, "ejercicio": "TALONES", "estado": "UP", "cinematica": {"angulo_pie": 10.4, "velocidad_angular": 42.0, "angulo_rodilla": 168.0, "inclinacion_tronco": 5.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 150.0, "conf": 0.9}, {"punto": "cadera_i", "x": 400.0, "y": 266.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 403.0, "y": 350.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 420.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 424.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212205380, "delta_t_ms": 380.0, "frame_id": 543, "ejercicio": "TALONES", "estado": "PEAK", "cinematica": {"angulo_pie": 14.1, "velocidad_angular": 10.5, "angulo_rodilla": 167.5, "inclinacion_tronco": 6.0}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 147.0, "conf": 0.9}, {"punto": "cadera_i", "x": 400.0, "y": 263.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 403.0, "y": 347.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 416.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 419.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212205590, "delta_t_ms": 210.0, "frame_id": 545, "ejercicio": "TALONES", "estado": "DOWN", "cinematica": {"angulo_pie": 5.0, "velocidad_angular": -48.2, "angulo_rodilla": 166.0, "inclinacion_tronco": 6.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 152.0, "conf": 0.9}, {"punto": "cadera_i", "x": 400.0, "y": 268.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 403.0, "y": 352.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 424.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 433.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212205780, "delta_t_ms": 190.0, "frame_id": 547, "ejercicio": "TALONES", "estado": "REST", "evaluacion": {"serie": "1/3", "rep_en_serie": "2/12", "repeticion": 2, "resultado": "INCORRECTA", "motivo": "Pierna cae bruscamente: controla el descenso"}, "cinematica": {"angulo_pie": 0.8, "velocidad_angular": -52.4, "angulo_rodilla": 166.0, "inclinacion_tronco": 5.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 402.0, "y": 154.0, "conf": 0.9}, {"punto": "cadera_i", "x": 400.0, "y": 270.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 403.0, "y": 354.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 438.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 439.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212220000, "delta_t_ms": 0.0, "frame_id": 610, "ejercicio": "PUNTAS", "estado": "UP", "cinematica": {"angulo_pie": 6.8, "velocidad_angular": 24.5, "angulo_rodilla": 170.2, "inclinacion_tronco": 4.9}, "landmarks_2d": [{"punto": "hombro_i", "x": 400.0, "y": 154.0, "conf": 0.91}, {"punto": "cadera_i", "x": 398.0, "y": 270.0, "conf": 0.87}, {"punto": "rodilla_i", "x": 401.0, "y": 354.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 428.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 429.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.88}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212220460, "delta_t_ms": 460.0, "frame_id": 614, "ejercicio": "PUNTAS", "estado": "PEAK", "cinematica": {"angulo_pie": 9.4, "velocidad_angular": 8.2, "angulo_rodilla": 171.0, "inclinacion_tronco": 5.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 400.0, "y": 154.0, "conf": 0.91}, {"punto": "cadera_i", "x": 398.0, "y": 270.0, "conf": 0.87}, {"punto": "rodilla_i", "x": 401.0, "y": 354.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 423.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 424.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.88}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212221010, "delta_t_ms": 550.0, "frame_id": 619, "ejercicio": "PUNTAS", "estado": "DOWN", "cinematica": {"angulo_pie": 4.1, "velocidad_angular": -14.8, "angulo_rodilla": 170.5, "inclinacion_tronco": 4.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 400.0, "y": 154.0, "conf": 0.91}, {"punto": "cadera_i", "x": 398.0, "y": 270.0, "conf": 0.87}, {"punto": "rodilla_i", "x": 401.0, "y": 354.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 432.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 433.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.88}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "lunes", "sesion": "20261028_122747", "timestamp_ms": 1793212221520, "delta_t_ms": 510.0, "frame_id": 624, "ejercicio": "PUNTAS", "estado": "REST", "evaluacion": {"serie": "1/3", "rep_en_serie": "1/12", "repeticion": 1, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_pie": 0.6, "velocidad_angular": -11.0, "angulo_rodilla": 171.0, "inclinacion_tronco": 4.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 400.0, "y": 154.0, "conf": 0.91}, {"punto": "cadera_i", "x": 398.0, "y": 270.0, "conf": 0.87}, {"punto": "rodilla_i", "x": 401.0, "y": 354.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 398.0, "y": 426.0, "conf": 0.88}, {"punto": "puntaG_i", "x": 442.0, "y": 437.0, "conf": 0.85}, {"punto": "puntaP_i", "x": 438.0, "y": 438.0, "conf": 0.81}, {"punto": "talon_i", "x": 384.0, "y": 437.0, "conf": 0.88}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "miercoles", "sesion": "20261030_101500", "timestamp_ms": 1793384100000, "delta_t_ms": 0.0, "frame_id": 110, "ejercicio": "STS", "estado": "RISING", "cinematica": {"angulo_rodilla": 124.0, "velocidad_angular_rodilla": 72.0, "inclinacion_tronco": 22.5}, "landmarks_2d": [{"punto": "hombro_i", "x": 395.0, "y": 178.0, "conf": 0.91}, {"punto": "cadera_i", "x": 380.0, "y": 288.0, "conf": 0.88}, {"punto": "rodilla_i", "x": 412.0, "y": 358.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 396.0, "y": 430.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "miercoles", "sesion": "20261030_101500", "timestamp_ms": 1793384100680, "delta_t_ms": 680.0, "frame_id": 118, "ejercicio": "STS", "estado": "STANDING", "cinematica": {"angulo_rodilla": 171.4, "velocidad_angular_rodilla": 14.2, "inclinacion_tronco": 6.8}, "landmarks_2d": [{"punto": "hombro_i", "x": 396.0, "y": 148.0, "conf": 0.93}, {"punto": "cadera_i", "x": 394.0, "y": 265.0, "conf": 0.89}, {"punto": "rodilla_i", "x": 398.0, "y": 350.0, "conf": 0.91}, {"punto": "tobillo_i", "x": 396.0, "y": 430.0, "conf": 0.88}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "miercoles", "sesion": "20261030_101500", "timestamp_ms": 1793384101320, "delta_t_ms": 640.0, "frame_id": 126, "ejercicio": "STS", "estado": "LOWERING", "cinematica": {"angulo_rodilla": 132.0, "velocidad_angular_rodilla": -64.5, "inclinacion_tronco": 19.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 395.0, "y": 172.0, "conf": 0.91}, {"punto": "cadera_i", "x": 382.0, "y": 284.0, "conf": 0.87}, {"punto": "rodilla_i", "x": 410.0, "y": 356.0, "conf": 0.89}, {"punto": "tobillo_i", "x": 396.0, "y": 430.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "miercoles", "sesion": "20261030_101500", "timestamp_ms": 1793384101990, "delta_t_ms": 670.0, "frame_id": 134, "ejercicio": "STS", "estado": "SIT", "evaluacion": {"serie": "1/2", "rep_en_serie": "1/10", "repeticion": 1, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_rodilla": 91.5, "velocidad_angular_rodilla": -48.0, "inclinacion_tronco": 12.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 392.0, "y": 192.0, "conf": 0.9}, {"punto": "cadera_i", "x": 372.0, "y": 304.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 418.0, "y": 360.0, "conf": 0.88}, {"punto": "tobillo_i", "x": 396.0, "y": 430.0, "conf": 0.87}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "viernes", "sesion": "20261101_110000", "timestamp_ms": 1793558400000, "delta_t_ms": 0.0, "frame_id": 80, "ejercicio": "ABD", "estado": "UP", "cinematica": {"angulo_abduccion_i": 6.2, "angulo_abduccion_d": 32.4, "velocidad_angular_cadera": 68.0, "inclinacion_tronco": 5.1}, "landmarks_2d": [{"punto": "hombro_i", "x": 442.0, "y": 158.0, "conf": 0.91}, {"punto": "hombro_d", "x": 374.0, "y": 157.0, "conf": 0.9}, {"punto": "cadera_i", "x": 414.0, "y": 268.0, "conf": 0.85}, {"punto": "cadera_d", "x": 370.0, "y": 266.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 402.0, "y": 352.0, "conf": 0.88}, {"punto": "rodilla_d", "x": 322.0, "y": 330.0, "conf": 0.87}, {"punto": "tobillo_i", "x": 392.0, "y": 428.0, "conf": 0.86}, {"punto": "tobillo_d", "x": 274.0, "y": 384.0, "conf": 0.85}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "viernes", "sesion": "20261101_110000", "timestamp_ms": 1793558400540, "delta_t_ms": 540.0, "frame_id": 86, "ejercicio": "ABD", "estado": "PEAK", "cinematica": {"angulo_abduccion_i": 5.8, "angulo_abduccion_d": 48.9, "velocidad_angular_cadera": 18.2, "inclinacion_tronco": 7.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 444.0, "y": 158.0, "conf": 0.91}, {"punto": "hombro_d", "x": 375.0, "y": 157.0, "conf": 0.9}, {"punto": "cadera_i", "x": 413.0, "y": 268.0, "conf": 0.85}, {"punto": "cadera_d", "x": 368.0, "y": 264.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 400.0, "y": 350.0, "conf": 0.88}, {"punto": "rodilla_d", "x": 304.0, "y": 312.0, "conf": 0.88}, {"punto": "tobillo_i", "x": 391.0, "y": 428.0, "conf": 0.86}, {"punto": "tobillo_d", "x": 246.0, "y": 350.0, "conf": 0.86}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "viernes", "sesion": "20261101_110000", "timestamp_ms": 1793558401180, "delta_t_ms": 640.0, "frame_id": 93, "ejercicio": "ABD", "estado": "DOWN", "cinematica": {"angulo_abduccion_i": 5.5, "angulo_abduccion_d": 24.1, "velocidad_angular_cadera": -42.0, "inclinacion_tronco": 6.2}, "landmarks_2d": [{"punto": "hombro_i", "x": 442.0, "y": 158.0, "conf": 0.91}, {"punto": "hombro_d", "x": 374.0, "y": 157.0, "conf": 0.9}, {"punto": "cadera_i", "x": 413.0, "y": 268.0, "conf": 0.85}, {"punto": "cadera_d", "x": 369.0, "y": 265.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 401.0, "y": 351.0, "conf": 0.88}, {"punto": "rodilla_d", "x": 330.0, "y": 336.0, "conf": 0.87}, {"punto": "tobillo_i", "x": 391.0, "y": 428.0, "conf": 0.86}, {"punto": "tobillo_d", "x": 288.0, "y": 396.0, "conf": 0.85}]}, {"paciente": "Paciente_01", "edad": 65, "dia_semana": "viernes", "sesion": "20261101_110000", "timestamp_ms": 1793558401790, "delta_t_ms": 610.0, "frame_id": 99, "ejercicio": "ABD", "estado": "REST", "evaluacion": {"serie": "1/2", "rep_en_serie": "1/10", "repeticion": 1, "resultado": "CORRECTA", "motivo": "Ejecucion correcta"}, "cinematica": {"angulo_abduccion_i": 4.9, "angulo_abduccion_d": 3.8, "velocidad_angular_cadera": -19.5, "inclinacion_tronco": 3.4}, "landmarks_2d": [{"punto": "hombro_i", "x": 432.0, "y": 156.0, "conf": 0.91}, {"punto": "hombro_d", "x": 364.0, "y": 156.0, "conf": 0.9}, {"punto": "cadera_i", "x": 408.0, "y": 268.0, "conf": 0.85}, {"punto": "cadera_d", "x": 368.0, "y": 267.0, "conf": 0.86}, {"punto": "rodilla_i", "x": 401.0, "y": 352.0, "conf": 0.88}, {"punto": "rodilla_d", "x": 364.0, "y": 351.0, "conf": 0.87}, {"punto": "tobillo_i", "x": 394.0, "y": 428.0, "conf": 0.86}, {"punto": "tobillo_d", "x": 362.0, "y": 427.0, "conf": 0.85}]}];
+
+    // =========================================================================
+    // 2. PARSER MULTI-FORMATO (.json1 multi-línea, NDJSON, JSON array y CSV)
+    // =========================================================================
+    function parseMultiJson(text) {
+      const trimmed = (text || "").trim();
+      if (!trimmed) return [];
+      if (trimmed.startsWith("[")) {
+        try { return JSON.parse(trimmed); } catch (e) {}
+      }
+      const docs = [];
+      let i = 0, n = trimmed.length;
+      while (i < n) {
+        while (i < n && /\s/.test(trimmed[i])) i++;
+        if (i >= n) break;
+        if (trimmed[i] === "{") {
+          let depth = 0, inStr = false, esc = false, start = i;
+          for (; i < n; i++) {
+            const c = trimmed[i];
+            if (esc) { esc = false; continue; }
+            if (c === "\\") { esc = true; continue; }
+            if (c === '"') { inStr = !inStr; continue; }
+            if (!inStr) {
+              if (c === "{") depth++;
+              else if (c === "}") {
+                depth--;
+                if (depth === 0) { i++; break; }
+              }
+            }
+          }
+          try {
+            const obj = JSON.parse(trimmed.slice(start, i));
+            docs.push(obj);
+          } catch (e) {}
+        } else {
+          i++;
+        }
+      }
+      return docs;
+    }
+
+    function parseCsvLogs(text, fallbackPatient) {
+      const lines = (text || "").trim().split(/\r?\n/);
+      if (lines.length < 2) return [];
+      const docs = [];
+      const exMap = {
+        "Sit-to-Stand": "STS",
+        "Abduccion_Cadera": "ABD",
+        "Elevacion_Talones": "TALONES",
+        "Elevacion_Puntas": "PUNTAS"
+      };
+      for (let idx = 1; idx < lines.length; idx++) {
+        const line = lines[idx].trim();
+        if (!line) continue;
+        const m = line.match(/^([^,]+),([^,]+),([^,]+),([^,]*),(.*)$/);
+        if (!m) continue;
+        const tsIso = m[1], rawEx = m[2], resOk = m[3], reasons = m[4];
+        let metrics = {};
+        try { metrics = JSON.parse(m[5].replace(/^"|"$/g, "").replace(/""/g, '"')); } catch (e) {}
+        const ej = exMap[rawEx] || rawEx.toUpperCase();
+        const peakVal = Number(metrics.angulo_max || metrics.pico_rodilla || 0);
+        docs.push({
+          paciente: fallbackPatient || "Paciente_CSV",
+          sesion: tsIso.slice(0, 10).replace(/-/g, ""),
+          timestamp_ms: Date.parse(tsIso) || Date.now(),
+          delta_t_ms: 950,
+          frame_id: idx,
+          ejercicio: ej,
+          estado: ej === "STS" ? "SIT" : "REST",
+          evaluacion: {
+            repeticion: idx,
+            resultado: resOk === "OK" ? "CORRECTA" : "INCORRECTA",
+            motivo: reasons || (resOk === "OK" ? "Ejecucion correcta" : "Falla biomecanica")
+          },
+          cinematica: {
+            angulo_rodilla: ej === "STS" ? peakVal : 170,
+            angulo_abduccion_d: ej === "ABD" ? peakVal : 0,
+            angulo_pie: (ej === "TALONES" || ej === "PUNTAS") ? peakVal : 0,
+            velocidad_angular: -Number(metrics.vel_caida_dps || 20),
+            inclinacion_tronco: Number(metrics.trunk_peak || 6)
+          },
+          landmarks_2d: []
+        });
+      }
+      return docs;
+    }
+
+    // =========================================================================
+    // 3. RECONSTRUCCIÓN BIOMECÁNICA DE REPETICIONES (4 EJERCICIOS)
+    // =========================================================================
+    function extractAngleForExercise(ej, cin) {
+      if (!cin) return 0;
+      if (ej === "STS") return Number(cin.angulo_rodilla || 0);
+      if (ej === "ABD") {
+        return Math.max(
+          Math.abs(Number(cin.angulo_abduccion_i || 0)),
+          Math.abs(Number(cin.angulo_abduccion_d || 0))
+        );
+      }
+      if (ej === "TALONES" || ej === "PUNTAS") {
+        return Math.abs(Number(cin.angulo_pie != null ? cin.angulo_pie : 0));
+      }
+      return Number(cin.angulo_pie || cin.angulo_rodilla || 0);
+    }
+
+    function extractOmegaForExercise(ej, cin) {
+      if (!cin) return 0;
+      if (ej === "STS") return Number(cin.velocidad_angular_rodilla || cin.velocidad_angular || 0);
+      if (ej === "ABD") return Number(cin.velocidad_angular_cadera || cin.velocidad_angular || 0);
+      return Number(cin.velocidad_angular || 0);
+    }
+
+    function targetRomForExercise(ej, patientInfo) {
+      if (ej === "STS") return 165.0;
+      if (ej === "ABD") return Number((patientInfo && patientInfo.abd_peak_deg) || 40.0);
+      if (ej === "TALONES") return 10.0;
+      if (ej === "PUNTAS") return 6.0;
+      return 40.0;
+    }
+
+    function buildReps(docs) {
+      const reps = [];
+      let cur = [];
+      for (const d of docs) {
+        if (!d || typeof d !== "object") continue;
+        if (d.protocolos_por_edad && d.pacientes) {
+          PROTOCOLS_DATA = d;
+          continue;
+        }
+        cur.push(d);
+        const isClosing = Boolean(d.evaluacion) || d.estado === "REST" || d.estado === "SIT";
+        if (isClosing) {
+          if (d.evaluacion) {
+            const ej = (d.ejercicio || "STS").toUpperCase();
+            let upMs = 0, holdMs = 0, downMs = 0;
+            let peakAng = 0, maxTrunk = 0, maxDownOmega = 0, maxUpOmega = 0;
+
+            for (const s of cur) {
+              const st = (s.estado || "").toUpperCase();
+              const dt = Math.max(0, Number(s.delta_t_ms || 0));
+              if (st === "PEAK" || st === "STANDING" || st === "UP" || st === "RISING") {
+                if (st === "PEAK" || st === "STANDING") upMs += dt;
+              }
+              if (st === "DOWN" || st === "LOWERING") holdMs += dt;
+              if (st === "REST" || st === "SIT") downMs += dt;
+
+              const cin = s.cinematica || {};
+              const ang = extractAngleForExercise(ej, cin);
+              if (ang > peakAng) peakAng = ang;
+
+              const tr = Math.abs(Number(cin.inclinacion_tronco || 0));
+              if (tr > maxTrunk) maxTrunk = tr;
+
+              const om = extractOmegaForExercise(ej, cin);
+              if (om > maxUpOmega) maxUpOmega = om;
+              if (om < 0 && Math.abs(om) > maxDownOmega) maxDownOmega = Math.abs(om);
+            }
+
+            // Si provino de un registro único en REST (como en el dashboard anterior)
+            if (cur.length === 1) {
+              const totalSingle = Math.max(0, Number(d.delta_t_ms || 0));
+              upMs = Math.round(totalSingle * 0.42);
+              holdMs = Math.round(totalSingle * 0.23);
+              downMs = Math.max(0, totalSingle - upMs - holdMs);
+            }
+
+            const totalMs = Math.round(upMs + holdMs + downMs);
+            const pName = d.paciente || "Paciente_01";
+            const pProto = (PROTOCOLS_DATA.pacientes && PROTOCOLS_DATA.pacientes[pName]) || {};
+
+            reps.push({
+              id: reps.length + 1,
+              paciente: pName,
+              edad: Number(d.edad || pProto.edad || 65),
+              dia_semana: d.dia_semana || "lunes",
+              sesion: d.sesion || "Sesion_Unica",
+              timestamp_ms: Number(d.timestamp_ms || 0),
+              frame_id: d.frame_id || 0,
+              ejercicio: ej,
+              serie: d.evaluacion.serie || "1/2",
+              rep_en_serie: d.evaluacion.rep_en_serie || (d.evaluacion.repeticion + "/10"),
+              rep: Number(d.evaluacion.repeticion || (reps.length + 1)),
+              resultado: d.evaluacion.resultado || "CORRECTA",
+              motivo: d.evaluacion.motivo || "Ejecucion correcta",
+              upMs: Math.round(upMs),
+              holdMs: Math.round(holdMs),
+              downMs: Math.round(downMs),
+              totalMs: totalMs,
+              peakAng: Number(peakAng.toFixed(1)),
+              maxTrunk: Number(maxTrunk.toFixed(1)),
+              maxDownOmega: Number(maxDownOmega.toFixed(1)),
+              maxUpOmega: Number(maxUpOmega.toFixed(1)),
+              states: cur.slice()
+            });
+          }
+          cur = [];
+        }
+      }
+      return reps;
+    }
+
+    // =========================================================================
+    // 4. ESTADO DE LA APLICACIÓN Y FILTRADO
+    // =========================================================================
+    let allReps = [];
+    let filteredReps = [];
+    let selectedRep = null;
+    let selectedPhaseIdx = 0;
+    let poseTimer = null;
+
+    function populateFilters() {
+      const fPat = document.getElementById("fPatient");
+      const fSes = document.getElementById("fSession");
+      const prevP = fPat.value;
+      const prevS = fSes.value;
+
+      const patSet = new Set(Object.keys((PROTOCOLS_DATA && PROTOCOLS_DATA.pacientes) || {}));
+      allReps.forEach(r => patSet.add(r.paciente));
+      const pats = Array.from(patSet).sort();
+
+      fPat.innerHTML = `<option value="ALL">Todos los pacientes (${pats.length})</option>` +
+        pats.map(p => `<option value="${p}">${p}</option>`).join("");
+      if (pats.includes(prevP)) fPat.value = prevP;
+      else if (pats.includes("Paciente_01")) fPat.value = "Paciente_01";
+
+      const sessions = Array.from(new Set(allReps.map(r => r.sesion))).sort();
+      fSes.innerHTML = `<option value="ALL">Todas las sesiones (${sessions.length})</option>` +
+        sessions.map(s => `<option value="${s}">${s}</option>`).join("");
+      if (sessions.includes(prevS)) fSes.value = prevS;
+    }
+
+    function getPatientProfile(patientName) {
+      const pacs = (PROTOCOLS_DATA && PROTOCOLS_DATA.pacientes) || {};
+      if (patientName !== "ALL" && pacs[patientName]) {
+        return { name: patientName, ...pacs[patientName] };
+      }
+      const firstP = allReps[0] ? allReps[0].paciente : "Paciente_01";
+      if (pacs[firstP]) {
+        return { name: patientName === "ALL" ? `Vista Global (${Object.keys(pacs).length} pacientes)` : firstP, ...pacs[firstP] };
+      }
+      return {
+        name: patientName === "ALL" ? "Cohorte General" : patientName,
+        edad: 65,
+        nivel: "Intermedio",
+        grupo_protocolo: "adulto_mayor_60_69",
+        dias_asignados: ["lunes", "miercoles", "viernes"],
+        descanso_entre_series_s: 60,
+        abd_peak_deg: 40.0,
+        ejercicios: {
+          STS: { series: 2, repeticiones: 10 },
+          ABD: { series: 2, repeticiones: 10 },
+          TALONES: { series: 3, repeticiones: 12 },
+          PUNTAS: { series: 3, repeticiones: 12 }
+        }
+      };
+    }
+
+    function applyFiltersAndRender() {
+      const fp = document.getElementById("fPatient").value;
+      const fe = document.getElementById("fExercise").value;
+      const fs = document.getElementById("fSession").value;
+      const fr = document.getElementById("fResult").value;
+      const q = (document.getElementById("fSearch").value || "").trim().toLowerCase();
+
+      filteredReps = allReps.filter(r => {
+        if (fp !== "ALL" && r.paciente !== fp) return false;
+        if (fe !== "ALL" && r.ejercicio !== fe) return false;
+        if (fs !== "ALL" && r.sesion !== fs) return false;
+        if (fr !== "ALL" && r.resultado !== fr) return false;
+        if (q && !(r.motivo.toLowerCase().includes(q) || r.ejercicio.toLowerCase().includes(q) || r.paciente.toLowerCase().includes(q))) {
+          return false;
+        }
+        return true;
+      });
+
+      renderPatientPlanBanner(fp);
+      renderKPIs();
+      renderCharts();
+      renderPareto();
+      renderTable();
+
+      if (!selectedRep || !filteredReps.includes(selectedRep)) {
+        selectRepetition(filteredReps[0] || null);
+      } else {
+        selectRepetition(selectedRep);
+      }
+    }
+
+    // =========================================================================
+    // 5. RENDERIZADO DE FICHA CLÍNICA Y AVANCE POR EJERCICIO
+    // =========================================================================
+    function renderPatientPlanBanner(fp) {
+      const prof = getPatientProfile(fp);
+      const grupos = (PROTOCOLS_DATA && PROTOCOLS_DATA.protocolos_por_edad) || {};
+      const gInfo = grupos[prof.grupo_protocolo] || {};
+
+      const initials = prof.name.replace(/[^A-Za-z0-9]/g, "").slice(0, 2).toUpperCase() || "P1";
+      document.getElementById("pAvatar").textContent = initials;
+      document.getElementById("pNameTitle").textContent = prof.name;
+      document.getElementById("pGroupSubtitle").textContent =
+        `${gInfo.etiqueta || ("Edad: " + prof.edad + " años")} — Nivel ${prof.nivel || gInfo.nivel || "Intermedio"}`;
+      document.getElementById("pProtocolBadge").textContent = `Nivel: ${prof.nivel || gInfo.nivel || "Intermedio"}`;
+
+      const pReps = allReps.filter(r => fp === "ALL" || r.paciente === fp);
+      const pSessions = new Set(pReps.map(r => r.sesion));
+      document.getElementById("pSessionsCount").textContent = `${pSessions.size} sesión(es) · ${pReps.length} repeticiones evaluadas`;
+
+      // Calcular tendencia de mejora entre la primera mitad y segunda mitad de repeticiones
+      const progBadge = document.getElementById("pProgressionBadge");
+      if (pReps.length >= 4) {
+        const half = Math.floor(pReps.length / 2);
+        const r1 = pReps.slice(0, half).filter(r => r.resultado === "CORRECTA").length / half;
+        const r2 = pReps.slice(half).filter(r => r.resultado === "CORRECTA").length / (pReps.length - half);
+        const diff = Math.round((r2 - r1) * 100);
+        if (diff >= 5) {
+          progBadge.className = "tag tag-ok";
+          progBadge.textContent = `▲ Avance positivo (+${diff}% calidad)`;
+        } else if (diff <= -5) {
+          progBadge.className = "tag tag-warn";
+          progBadge.textContent = `▼ Fatiga detectada (${diff}% en tramo final)`;
+        } else {
+          progBadge.className = "tag tag-primary";
+          progBadge.textContent = `● Desempeño estable (${Math.round(r2 * 100)}% acierto)`;
+        }
+      } else {
+        progBadge.className = "tag tag-primary";
+        progBadge.textContent = pReps.length ? "● Sesión inicial en curso" : "Sin registros en base de datos";
+      }
+
+      const metaContainer = document.getElementById("pMetaTags");
+      const diasAsig = (prof.dias_asignados || ["lunes", "miercoles", "viernes"]).map(d => d.toLowerCase());
+      metaContainer.innerHTML = `
+        <span class="tag">🎂 Edad: <strong>${prof.edad || 65} años</strong></span>
+        <span class="tag">📐 Meta ABD: <strong>≥ ${prof.abd_peak_deg || 40}°</strong></span>
+        <span class="tag">🦵 Meta Rodilla STS: <strong>≥ 165°</strong></span>
+        <span class="tag">🦶 Meta Talones/Puntas: <strong>≥ 10° / 6°</strong></span>
+        <span class="tag">⏱️ Descanso entre series: <strong>${prof.descanso_entre_series_s || 60} s</strong></span>
+      `;
+
+      const weekDays = [
+        { k: "lunes", lbl: "Lun" }, { k: "martes", lbl: "Mar" }, { k: "miercoles", lbl: "Mié" },
+        { k: "jueves", lbl: "Jue" }, { k: "viernes", lbl: "Vie" }, { k: "sabado", lbl: "Sáb" },
+        { k: "domingo", lbl: "Dom" }
+      ];
+      const activeDays = new Set(pReps.map(r => (r.dia_semana || "").toLowerCase()));
+      document.getElementById("pWeekStrip").innerHTML = weekDays.map(d => {
+        const isAssigned = diasAsig.includes(d.k);
+        const isDone = activeDays.has(d.k);
+        const cls = isDone ? "day-box done" : (isAssigned ? "day-box assigned" : "day-box");
+        const stTxt = isDone ? "✓ Realizado" : (isAssigned ? "Asignado" : "Descanso");
+        return `<div class="${cls}"><span class="d-name">${d.lbl}</span><span class="d-st">${stTxt}</span></div>`;
+      }).join("");
+
+      // Tarjetas de los 4 ejercicios
+      const exOrder = [
+        { k: "STS", name: "Sit-to-Stand (STS)", icon: "🪑", unit: "° rodilla", target: 165 },
+        { k: "ABD", name: "Abducción Cadera (ABD)", icon: "🦵", unit: "° cadera", target: Number(prof.abd_peak_deg || 40) },
+        { k: "TALONES", name: "Elev. de Talones", icon: "🦶", unit: "° talón", target: 10 },
+        { k: "PUNTAS", name: "Elev. de Puntas", icon: "👟", unit: "° punta", target: 6 }
+      ];
+      const ejPlan = prof.ejercicios || {};
+      document.getElementById("exPlanCards").innerHTML = exOrder.map(ex => {
+        const cfg = ejPlan[ex.k] || { series: 2, repeticiones: 10 };
+        const targetTotalReps = Number(cfg.series || 2) * Number(cfg.repeticiones || 10);
+        const repsEx = pReps.filter(r => r.ejercicio === ex.k);
+        const okEx = repsEx.filter(r => r.resultado === "CORRECTA").length;
+        const rateEx = repsEx.length ? Math.round((okEx / repsEx.length) * 100) : 0;
+        const avgPeak = repsEx.length
+          ? (repsEx.reduce((a, b) => a + b.peakAng, 0) / repsEx.length).toFixed(1)
+          : "0.0";
+        const pctGoal = Math.min(100, Math.round((repsEx.length / Math.max(1, targetTotalReps)) * 100));
+        const badgeCls = repsEx.length === 0 ? "tag" : (rateEx >= 70 ? "tag tag-ok" : "tag tag-warn");
+        const badgeTxt = repsEx.length === 0 ? "Pendiente" : `${rateEx}% calidad (${okEx}/${repsEx.length} OK)`;
+
+        return `
+          <div class="ex-card">
+            <div class="ex-card-top">
+              <span class="ex-name">${ex.icon} ${ex.name}</span>
+              <span class="${badgeCls}">${badgeTxt}</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${pctGoal}%"></div>
+            </div>
+            <div class="ex-metrics num">
+              <span>Plan: <strong>${cfg.series}x${cfg.repeticiones}</strong> (${repsEx.length}/${targetTotalReps} reps)</span>
+              <span>ROM medio: <strong>${avgPeak}°</strong> (meta ≥${ex.target}°)</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // =========================================================================
+    // 6. RENDERIZADO DE 6 KPIs CLÍNICOS
+    // =========================================================================
+    function renderKPIs() {
+      const total = filteredReps.length;
+      const ok = filteredReps.filter(r => r.resultado === "CORRECTA").length;
+      const bad = total - ok;
+      const rate = total > 0 ? Math.round((ok / total) * 100) : 0;
+      const avgRom = total > 0
+        ? (filteredReps.reduce((a, b) => a + b.peakAng, 0) / total).toFixed(1)
+        : "0.0";
+      const avgDurS = total > 0
+        ? (filteredReps.reduce((a, b) => a + b.totalMs, 0) / total / 1000).toFixed(2)
+        : "0.00";
+      const avgDownMs = total > 0
+        ? Math.round(filteredReps.reduce((a, b) => a + b.downMs, 0) / total)
+        : 0;
+
+      const byEx = ["STS", "ABD", "TALONES", "PUNTAS"]
+        .map(k => `${k}:${filteredReps.filter(r => r.ejercicio === k).length}`)
+        .join(" · ");
+
+      document.getElementById("kpiTotal").textContent = total;
+      document.getElementById("kpiTotalSub").textContent = byEx;
+      document.getElementById("kpiRate").textContent = `${rate}%`;
+      document.getElementById("kpiRateSub").textContent =
+        rate >= 75 ? "✓ Rango terapéutico óptimo" : "⚠ Reforzar control postural";
+      document.getElementById("kpiOk").textContent = ok;
+      document.getElementById("kpiOkSub").textContent = `${rate}% del volumen evaluado`;
+      document.getElementById("kpiBad").textContent = bad;
+      document.getElementById("kpiBadSub").textContent = `${100 - rate}% con compensación`;
+      document.getElementById("kpiRom").textContent = `${avgRom}°`;
+      document.getElementById("kpiRomSub").textContent = "Ángulo pico medio alcanzado";
+      document.getElementById("kpiDur").textContent = `${avgDurS} s`;
+      document.getElementById("kpiDurSub").textContent = `Bajada media: ${avgDownMs} ms`;
+    }
+
+    // =========================================================================
+    // 7. GRÁFICAS CLÍNICAS EN CANVAS DE ALTA RESOLUCIÓN (100% OFFLINE)
+    // =========================================================================
+    function setupHiDPICanvas(canvas) {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      const w = Math.max(300, Math.floor(rect.width));
+      const h = Math.max(180, Math.floor(rect.height));
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, w, h };
+    }
+
+    function renderCharts() {
+      drawRomTrendChart();
+      drawSessionProgressChart();
+      drawPhaseDurationsChart();
+    }
+
+    function drawRomTrendChart() {
+      const canvas = document.getElementById("chartRomTrend");
+      const { ctx, w, h } = setupHiDPICanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
+
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const textCol = isLight ? "#475569" : "#94a3b8";
+      const gridCol = isLight ? "rgba(100,116,139,0.16)" : "rgba(148,163,184,0.12)";
+
+      if (filteredReps.length === 0) {
+        ctx.fillStyle = textCol;
+        ctx.font = "13px Inter, sans-serif";
+        ctx.fillText("Sin repeticiones para graficar.", w / 2 - 90, h / 2);
+        return;
+      }
+
+      const pad = { l: 44, r: 22, t: 26, b: 32 };
+      const cw = w - pad.l - pad.r;
+      const ch = h - pad.t - pad.b;
+
+      const vals = filteredReps.map(r => r.peakAng);
+      const trunks = filteredReps.map(r => r.maxTrunk);
+      const maxVal = Math.max(...vals, ...trunks, 50) * 1.12;
+      const minVal = 0;
+
+      // Líneas horizontales
+      ctx.strokeStyle = gridCol;
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + (ch * i) / 4;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+
+        const vLbl = Math.round(maxVal - ((maxVal - minVal) * i) / 4);
+        ctx.fillStyle = textCol;
+        ctx.font = "11px Inter, sans-serif";
+        ctx.textAlign = "right";
+        ctx.fillText(vLbl + "°", pad.l - 6, y + 4);
+      }
+
+      const xFor = idx => pad.l + (filteredReps.length === 1 ? cw / 2 : (idx * cw) / (filteredReps.length - 1));
+      const yFor = v => pad.t + ch - ((v - minVal) / Math.max(1e-5, maxVal - minVal)) * ch;
+
+      // Si hay un único ejercicio filtrado, dibujar línea de meta clínica
+      const fe = document.getElementById("fExercise").value;
+      if (fe !== "ALL") {
+        const prof = getPatientProfile(document.getElementById("fPatient").value);
+        const target = targetRomForExercise(fe, prof);
+        if (target <= maxVal) {
+          const yt = yFor(target);
+          ctx.save();
+          ctx.setLineDash([6, 4]);
+          ctx.strokeStyle = "#10b981";
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(pad.l, yt);
+          ctx.lineTo(w - pad.r, yt);
+          ctx.stroke();
+          ctx.fillStyle = "#10b981";
+          ctx.font = "bold 11px Inter, sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText(`Meta ${fe} ≥ ${target}°`, pad.l + 6, yt - 5);
+          ctx.restore();
+        }
+      }
+
+      // Curva de Inclinación de Tronco (naranja suave)
+      ctx.strokeStyle = "rgba(245, 158, 11, 0.75)";
+      ctx.lineWidth = 1.75;
+      ctx.beginPath();
+      filteredReps.forEach((r, idx) => {
+        const x = xFor(idx), y = yFor(r.maxTrunk);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Curva de Ángulo Pico (ROM)
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      filteredReps.forEach((r, idx) => {
+        const x = xFor(idx), y = yFor(r.peakAng);
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Puntos interactivos por repetición
+      const hitPoints = [];
+      filteredReps.forEach((r, idx) => {
+        const x = xFor(idx), y = yFor(r.peakAng);
+        const isOk = r.resultado === "CORRECTA";
+        const isSel = selectedRep && selectedRep.id === r.id;
+
+        ctx.beginPath();
+        ctx.arc(x, y, isSel ? 6.5 : 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = isOk ? "#10b981" : "#ef4444";
+        ctx.fill();
+        ctx.lineWidth = isSel ? 2.5 : 1.5;
+        ctx.strokeStyle = isSel ? "#ffffff" : "#0f172a";
+        ctx.stroke();
+
+        if (idx % Math.max(1, Math.ceil(filteredReps.length / 10)) === 0 || idx === filteredReps.length - 1) {
+          ctx.fillStyle = textCol;
+          ctx.font = "10.5px Inter, sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(`#${r.rep}`, x, h - 10);
+        }
+        hitPoints.push({ x, y, rep: r });
+      });
+
+      // Leyenda superior
+      ctx.font = "11px Inter, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillText("● Ángulo Pico (ROM)", w - pad.r - 135, 16);
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillText("● Inclinación Tronco (°)", w - pad.r, 16);
+
+      canvas.onclick = evt => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = evt.clientX - rect.left;
+        const my = evt.clientY - rect.top;
+        let best = null, bestDist = 400;
+        for (const p of hitPoints) {
+          const d2 = (p.x - mx) ** 2 + (p.y - my) ** 2;
+          if (d2 < bestDist) { bestDist = d2; best = p.rep; }
+        }
+        if (best) selectRepetition(best);
+      };
+    }
+
+    function drawSessionProgressChart() {
+      const canvas = document.getElementById("chartSessionProgress");
+      const { ctx, w, h } = setupHiDPICanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
+
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const textCol = isLight ? "#475569" : "#94a3b8";
+      const gridCol = isLight ? "rgba(100,116,139,0.16)" : "rgba(148,163,184,0.12)";
+
+      if (filteredReps.length === 0) return;
+
+      // Agrupar por (sesion + ejercicio) para mostrar el avance longitudinal
+      const groups = [];
+      const map = new Map();
+      for (const r of filteredReps) {
+        const key = `${r.dia_semana.slice(0, 3).toUpperCase()} · ${r.ejercicio}`;
+        if (!map.has(key)) {
+          const g = { key, ok: 0, bad: 0, total: 0 };
+          map.set(key, g);
+          groups.push(g);
+        }
+        const g = map.get(key);
+        g.total++;
+        if (r.resultado === "CORRECTA") g.ok++;
+        else g.bad++;
+      }
+
+      const pad = { l: 42, r: 20, t: 26, b: 34 };
+      const cw = w - pad.l - pad.r;
+      const ch = h - pad.t - pad.b;
+      const maxTot = Math.max(...groups.map(g => g.total), 4);
+
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + (ch * i) / 4;
+        ctx.strokeStyle = gridCol;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+      }
+
+      const step = cw / Math.max(1, groups.length);
+      const barW = Math.min(48, step * 0.56);
+
+      groups.forEach((g, idx) => {
+        const x = pad.l + idx * step + (step - barW) / 2;
+        const hOk = (g.ok / maxTot) * ch;
+        const hBad = (g.bad / maxTot) * ch;
+        const yOk = pad.t + ch - hOk;
+        const yBad = yOk - hBad;
+
+        // Correctas (verde)
+        ctx.fillStyle = "#10b981";
+        ctx.fillRect(x, yOk, barW, hOk);
+
+        // Incorrectas (rojo arriba)
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(x, yBad, barW, hBad);
+
+        const pct = Math.round((g.ok / Math.max(1, g.total)) * 100);
+        ctx.fillStyle = textCol;
+        ctx.font = "bold 11px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(`${pct}%`, x + barW / 2, Math.max(14, yBad - 5));
+
+        ctx.font = "10.5px Inter, sans-serif";
+        ctx.fillText(g.key, x + barW / 2, h - 10);
+      });
+
+      ctx.font = "11px Inter, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#10b981";
+      ctx.fillText("■ Correctas", w - pad.r - 95, 16);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillText("■ Incorrectas", w - pad.r, 16);
+    }
+
+    function drawPhaseDurationsChart() {
+      const canvas = document.getElementById("chartPhaseDurations");
+      const { ctx, w, h } = setupHiDPICanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
+
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
+      const textCol = isLight ? "#475569" : "#94a3b8";
+      const gridCol = isLight ? "rgba(100,116,139,0.16)" : "rgba(148,163,184,0.12)";
+
+      const sliceReps = filteredReps.slice(-18);
+      if (sliceReps.length === 0) return;
+
+      const pad = { l: 48, r: 18, t: 26, b: 32 };
+      const cw = w - pad.l - pad.r;
+      const ch = h - pad.t - pad.b;
+      const maxMs = Math.max(...sliceReps.map(r => r.totalMs), 1000) * 1.1;
+
+      for (let i = 0; i <= 4; i++) {
+        const y = pad.t + (ch * i) / 4;
+        ctx.strokeStyle = gridCol;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+
+        const vMs = Math.round(maxMs - (maxMs * i) / 4);
+        ctx.fillStyle = textCol;
+        ctx.font = "10.5px Inter, sans-serif";
+        ctx.textAlign = "right";
+        ctx.fillText(vMs + "ms", pad.l - 5, y + 4);
+      }
+
+      const step = cw / sliceReps.length;
+      const barW = Math.min(34, step * 0.62);
+
+      sliceReps.forEach((r, idx) => {
+        const x = pad.l + idx * step + (step - barW) / 2;
+        const hUp = (r.upMs / maxMs) * ch;
+        const hHold = (r.holdMs / maxMs) * ch;
+        const hDown = (r.downMs / maxMs) * ch;
+
+        const yUp = pad.t + ch - hUp;
+        const yHold = yUp - hHold;
+        const yDown = yHold - hDown;
+
+        ctx.fillStyle = "#38bdf8";
+        ctx.fillRect(x, yUp, barW, hUp);
+        ctx.fillStyle = "#818cf8";
+        ctx.fillRect(x, yHold, barW, hHold);
+        ctx.fillStyle = "#f59e0b";
+        ctx.fillRect(x, yDown, barW, hDown);
+
+        ctx.fillStyle = textCol;
+        ctx.font = "10px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(`#${r.rep}`, x + barW / 2, h - 10);
+      });
+
+      ctx.font = "11px Inter, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillText("■ Subida", w - pad.r - 165, 16);
+      ctx.fillStyle = "#818cf8";
+      ctx.fillText("■ Cima/Sostén", w - pad.r - 75, 16);
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillText("■ Bajada", w - pad.r, 16);
+    }
+
+    // =========================================================================
+    // 8. DIAGNÓSTICO DE COMPENSACIONES POSTURALES Y RECOMENDACIONES CLÍNICAS
+    // =========================================================================
+    function renderPareto() {
+      const box = document.getElementById("paretoContainer");
+      const badReps = filteredReps.filter(r => r.resultado !== "CORRECTA");
+
+      if (badReps.length === 0) {
+        box.innerHTML = `
+          <div class="pareto-item" style="border-color:rgba(16,185,129,0.4);background:var(--ok-soft);">
+            <div class="pareto-head" style="color:var(--ok);">
+              <span>✓ Ejecución Biomecánica Sin Compensaciones</span>
+              <span>100% Calidad</span>
+            </div>
+            <div class="pareto-rec" style="color:var(--text-soft);">
+              Todas las repeticiones filtradas cumplen con los umbrales de amplitud articular (ROM), estabilidad de tronco y descenso excéntrico controlado.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const counts = new Map();
+      badReps.forEach(r => {
+        const parts = (r.motivo || "Falla postural").split(/[;,]/).map(s => s.trim()).filter(Boolean);
+        parts.forEach(p => {
+          const clean = p.replace(/\(.*?\)/g, "").trim();
+          counts.set(clean, (counts.get(clean) || 0) + 1);
+        });
+      });
+
+      const recs = {
+        "Espalda muy inclinada": "Indicador de debilidad en cuádriceps/glúteo o silla muy baja. Indicar cruzar brazos al pecho y mantener mirada al frente.",
+        "Tronco inclinado": "Compensación lateral del cuadrado lumbar durante abducción. Reducir el rango objetivo o usar apoyo ligero en respaldo.",
+        "Levantada incompleta": "No alcanzó extensión completa de rodilla (≥165°). Enfatizar bloqueo suave de rodillas y cadera al final del ascenso.",
+        "Rango insuficiente": "Amplitud articular menor al umbral prescrito para su grupo etario. Verificar fatiga muscular o ajustar meta en protocolos.json.",
+        "Pierna cae bruscamente: controla el descenso": "Déficit de control excéntrico (velocidad de bajada excesiva). Indicar conteo de 2 segundos durante el descenso.",
+        "Caida brusca: controla el descenso": "Descenso acelerado en Sit-to-Stand. Fortalecer fase excéntrica para prevención de caídas."
+      };
+
+      const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+      box.innerHTML = sorted.map(([reason, cnt]) => {
+        const pct = Math.round((cnt / badReps.length) * 100);
+        let recTxt = "Monitorear alineación articular y velocidad de ejecución en las siguientes series.";
+        for (const [k, v] of Object.entries(recs)) {
+          if (reason.toLowerCase().includes(k.toLowerCase().slice(0, 14))) { recTxt = v; break; }
+        }
+        return `
+          <div class="pareto-item">
+            <div class="pareto-head">
+              <span style="color:var(--bad);">⚠ ${reason}</span>
+              <span class="tag tag-bad num">${cnt} rep(s) · ${pct}% de fallas</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${pct}%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div>
+            </div>
+            <div class="pareto-rec">💡 <strong>Recomendación clínica:</strong> ${recTxt}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // =========================================================================
+    // 9. INSPECTOR DE ESQUELETO 2D Y REPRODUCTOR DE FASES
+    // =========================================================================
+    function selectRepetition(rep) {
+      if (poseTimer) { clearInterval(poseTimer); poseTimer = null; }
+      selectedRep = rep;
+      document.querySelectorAll("#repsTableBody tr").forEach(tr => {
+        tr.classList.toggle("selected-row", rep && Number(tr.dataset.repId) === rep.id);
+      });
+      if (!rep) return;
+
+      // Buscar el índice de la fase PEAK o STANDING por defecto
+      const states = rep.states || [];
+      let peakIdx = states.findIndex(s => s.estado === "PEAK" || s.estado === "STANDING");
+      if (peakIdx < 0) peakIdx = Math.max(0, states.length - 1);
+      selectedPhaseIdx = peakIdx;
+
+      renderInspector();
+      drawRomTrendChart();
+    }
+
+    function renderInspector() {
+      const rep = selectedRep;
+      if (!rep) return;
+      const states = rep.states || [];
+      const curState = states[selectedPhaseIdx] || states[states.length - 1] || {};
+      const stName = curState.estado || "REST";
+
+      document.getElementById("inspectorTitle").textContent =
+        `🎯 Inspector Biomecánico — ${rep.paciente} · ${rep.ejercicio} Rep #${rep.rep} (${rep.resultado})`;
+      document.getElementById("inspectorPhaseBadge").textContent = `Fase: ${stName} (${selectedPhaseIdx + 1}/${states.length})`;
+
+      const pillsBox = document.getElementById("phasePills");
+      pillsBox.innerHTML = states.map((s, idx) => `
+        <button class="phase-btn ${idx === selectedPhaseIdx ? "active" : ""}" data-idx="${idx}">
+          ${idx + 1}. ${s.estado || "FRAME"} (${Math.round(s.delta_t_ms || 0)}ms)
+        </button>
+      `).join("");
+      pillsBox.querySelectorAll(".phase-btn").forEach(btn => {
+        btn.onclick = () => {
+          if (poseTimer) { clearInterval(poseTimer); poseTimer = null; }
+          selectedPhaseIdx = Number(btn.dataset.idx);
+          renderInspector();
+        };
+      });
+
+      const cin = curState.cinematica || {};
+      const cinTags = Object.entries(cin).map(([k, v]) =>
+        `<span class="tag num">${k}: <strong>${v}</strong></span>`
+      ).join("");
+      document.getElementById("inspectorSummary").innerHTML = `
+        <span class="tag ${rep.resultado === "CORRECTA" ? "tag-ok" : "tag-bad"}">${rep.resultado}: ${rep.motivo}</span>
+        <span class="tag tag-primary num">ROM Pico: <strong>${rep.peakAng}°</strong></span>
+        <span class="tag num">Tronco Máx: <strong>${rep.maxTrunk}°</strong></span>
+        ${cinTags}
+      `;
+
+      const lms = curState.landmarks_2d || [];
+      const grid = document.getElementById("landmarksGrid");
+      if (lms.length === 0) {
+        grid.innerHTML = `<div style="color:var(--muted);grid-column:1/-1;">Sin coordenadas 2D en este registro.</div>`;
+      } else {
+        grid.innerHTML = lms.map(lm => `
+          <div class="lm-item num">
+            <div class="lm-name">${lm.punto}</div>
+            <div>x: ${lm.x} · y: ${lm.y}</div>
+            <div style="color:var(--ok);font-size:10.5px;">conf: ${lm.conf}</div>
+          </div>
+        `).join("");
+      }
+
+      drawPoseSkeleton(curState);
+    }
+
+    function drawPoseSkeleton(stateObj) {
+      const canvas = document.getElementById("poseCanvas");
+      const { ctx, w, h } = setupHiDPICanvas(canvas);
+      ctx.clearRect(0, 0, w, h);
+
+      // Fondo cuadriculado clínico
+      ctx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 28) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 28) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      const lms = (stateObj && stateObj.landmarks_2d) || [];
+      if (lms.length === 0) {
+        ctx.fillStyle = "#94a3b8";
+        ctx.font = "12.5px Inter, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Sin landmarks 2D para dibujar en esta repetición.", w / 2, h / 2);
+        return;
+      }
+
+      const ptMap = {};
+      lms.forEach(p => { ptMap[p.punto] = p; });
+
+      const xs = lms.map(p => Number(p.x));
+      const ys = lms.map(p => Number(p.y));
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      const minY = Math.min(...ys), maxY = Math.max(...ys);
+      const spanX = Math.max(60, maxX - minX);
+      const spanY = Math.max(120, maxY - minY);
+      const scale = Math.min((w - 80) / spanX, (h - 70) / spanY);
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+
+      const toScreen = p => ({
+        x: w / 2 + (Number(p.x) - cx) * scale,
+        y: h / 2 + (Number(p.y) - cy) * scale,
+        conf: Number(p.conf || 0),
+        name: p.punto
+      });
+
+      const edges = [
+        ["hombro_i", "hombro_d", "#38bdf8"],
+        ["cadera_i", "cadera_d", "#38bdf8"],
+        ["hombro_i", "cadera_i", "#10b981"],
+        ["hombro_d", "cadera_d", "#10b981"],
+        ["cadera_i", "rodilla_i", "#38bdf8"],
+        ["rodilla_i", "tobillo_i", "#38bdf8"],
+        ["cadera_d", "rodilla_d", "#818cf8"],
+        ["rodilla_d", "tobillo_d", "#818cf8"],
+        ["tobillo_i", "talon_i", "#f59e0b"],
+        ["talon_i", "puntaG_i", "#f59e0b"],
+        ["talon_i", "puntaP_i", "#f59e0b"],
+        ["tobillo_d", "talon_d", "#f59e0b"],
+        ["talon_d", "puntaG_d", "#f59e0b"],
+        ["talon_d", "puntaP_d", "#f59e0b"]
+      ];
+
+      edges.forEach(([a, b, col]) => {
+        if (ptMap[a] && ptMap[b]) {
+          const pa = toScreen(ptMap[a]);
+          const pb = toScreen(ptMap[b]);
+          ctx.strokeStyle = col;
+          ctx.lineWidth = 3.2;
+          ctx.beginPath();
+          ctx.moveTo(pa.x, pa.y);
+          ctx.lineTo(pb.x, pb.y);
+          ctx.stroke();
+        }
+      });
+
+      lms.forEach(rawP => {
+        const p = toScreen(rawP);
+        const isFoot = p.name.includes("punta") || p.name.includes("talon");
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, isFoot ? 4.5 : 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = isFoot ? "#f59e0b" : "#38bdf8";
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = "#080d1a";
+        ctx.stroke();
+
+        ctx.fillStyle = "#e2e8f0";
+        ctx.font = "10px Inter, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(p.name, p.x + 7, p.y + 3);
+      });
+
+      ctx.fillStyle = "#38bdf8";
+      ctx.font = "bold 12px Inter, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(`${stateObj.ejercicio || ""} · Fase ${stateObj.estado || ""} (frame #${stateObj.frame_id || "-"})`, 12, 20);
+    }
+
+    // =========================================================================
+    // 10. TABLA DETALLADA Y EXPORTACIÓN CSV
+    // =========================================================================
+    function renderTable() {
+      const tbody = document.getElementById("repsTableBody");
+      document.getElementById("tableCountInfo").textContent =
+        `Mostrando ${filteredReps.length} de ${allReps.length} repeticiones evaluadas`;
+
+      if (filteredReps.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="14" style="text-align:center;padding:28px;color:var(--muted);">No se encontraron repeticiones con los filtros seleccionados.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filteredReps.map(r => {
+        const isOk = r.resultado === "CORRECTA";
+        const isSel = selectedRep && selectedRep.id === r.id;
+        return `
+          <tr data-rep-id="${r.id}" class="${isSel ? "selected-row" : ""}">
+            <td class="num"><strong>#${r.rep}</strong></td>
+            <td><strong>${r.paciente}</strong> <span style="color:var(--muted);font-size:11px;">(${r.edad}a)</span></td>
+            <td class="num">${r.dia_semana} · <span style="color:var(--muted);font-size:11px;">${r.sesion}</span></td>
+            <td><span class="tag tag-primary">${r.ejercicio}</span></td>
+            <td class="num">${r.serie} · ${r.rep_en_serie}</td>
+            <td><span class="tag ${isOk ? "tag-ok" : "tag-bad"}">${r.resultado}</span></td>
+            <td style="color:${isOk ? "var(--text-soft)" : "var(--bad)"};font-weight:${isOk ? "400" : "600"};">${r.motivo}</td>
+            <td class="text-right num"><strong>${r.peakAng}°</strong></td>
+            <td class="text-right num">${r.maxTrunk}°</td>
+            <td class="text-right num">${r.maxDownOmega} °/s</td>
+            <td class="text-right num">${r.upMs} ms</td>
+            <td class="text-right num">${r.holdMs} ms</td>
+            <td class="text-right num">${r.downMs} ms</td>
+            <td class="text-right num"><strong>${r.totalMs} ms</strong></td>
+          </tr>
+        `;
+      }).join("");
+
+      tbody.querySelectorAll("tr[data-rep-id]").forEach(tr => {
+        tr.onclick = () => {
+          const id = Number(tr.dataset.repId);
+          const found = filteredReps.find(x => x.id === id);
+          if (found) selectRepetition(found);
+        };
+      });
+    }
+
+    function exportFilteredCsv() {
+      if (!filteredReps.length) return;
+      const headers = [
+        "ID", "Paciente", "Edad", "Dia_Semana", "Sesion", "Ejercicio",
+        "Serie", "Rep_En_Serie", "Num_Rep", "Resultado", "Motivo",
+        "Angulo_Pico_Deg", "Tronco_Max_Deg", "Vel_Bajada_DPS",
+        "Subida_ms", "Cima_ms", "Bajada_ms", "Total_ms"
+      ];
+      const rows = filteredReps.map(r => [
+        r.id, r.paciente, r.edad, r.dia_semana, r.sesion, r.ejercicio,
+        r.serie, r.rep_en_serie, r.rep, r.resultado, `"${(r.motivo || "").replace(/"/g, '""')}"`,
+        r.peakAng, r.maxTrunk, r.maxDownOmega, r.upMs, r.holdMs, r.downMs, r.totalMs
+      ]);
+      const csv = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `reporte_biomecanico_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+    }
+
+    // =========================================================================
+    // 11. EVENTOS DE ARCHIVOS, DRAG & DROP Y CONTROLES
+    // =========================================================================
+    function handleFiles(fileList) {
+      if (!fileList || !fileList.length) return;
+      let loadedDocs = [];
+      let filesProcessed = 0;
+      const names = [];
+
+      Array.from(fileList).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = evt => {
+          const text = evt.target.result || "";
+          names.push(file.name);
+          if (file.name.toLowerCase().endsWith(".csv")) {
+            loadedDocs = loadedDocs.concat(parseCsvLogs(text, file.name.replace(/\.csv$/i, "")));
+          } else {
+            const parsed = parseMultiJson(text);
+            if (parsed.length === 1 && parsed[0].protocolos_por_edad && parsed[0].pacientes) {
+              PROTOCOLS_DATA = parsed[0];
+            } else {
+              loadedDocs = loadedDocs.concat(parsed);
+            }
+          }
+          filesProcessed++;
+          if (filesProcessed === fileList.length) {
+            if (loadedDocs.length > 0) {
+              allReps = buildReps(loadedDocs);
+            }
+            populateFilters();
+            applyFiltersAndRender();
+            document.getElementById("statusText").textContent =
+              `Cargado: ${names.join(", ")} (${allReps.length} repeticiones reconstruidas)`;
+          }
+        };
+        reader.readAsText(file, "UTF-8");
+      });
+    }
+
+    document.getElementById("dbFileInput").addEventListener("change", e => handleFiles(e.target.files));
+    document.getElementById("protoFileInput").addEventListener("change", e => handleFiles(e.target.files));
+
+    window.addEventListener("dragover", e => { e.preventDefault(); });
+    window.addEventListener("drop", e => {
+      e.preventDefault();
+      if (e.dataTransfer && e.dataTransfer.files) {
+        handleFiles(e.dataTransfer.files);
+      }
+    });
+
+    ["fPatient", "fExercise", "fSession", "fResult"].forEach(id => {
+      document.getElementById(id).addEventListener("change", applyFiltersAndRender);
+    });
+    document.getElementById("fSearch").addEventListener("input", applyFiltersAndRender);
+
+    document.getElementById("btnExportCsv").onclick = exportFilteredCsv;
+    document.getElementById("btnPrint").onclick = () => window.print();
+    document.getElementById("btnTheme").onclick = () => {
+      const root = document.documentElement;
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      renderCharts();
+    };
+
+    document.getElementById("btnPlayPose").onclick = () => {
+      if (!selectedRep || !selectedRep.states || !selectedRep.states.length) return;
+      if (poseTimer) {
+        clearInterval(poseTimer);
+        poseTimer = null;
+        return;
+      }
+      selectedPhaseIdx = 0;
+      renderInspector();
+      poseTimer = setInterval(() => {
+        selectedPhaseIdx = (selectedPhaseIdx + 1) % selectedRep.states.length;
+        renderInspector();
+        if (selectedPhaseIdx === selectedRep.states.length - 1) {
+          clearInterval(poseTimer);
+          poseTimer = null;
+        }
+      }, 520);
+    };
+
+    window.addEventListener("resize", () => {
+      renderCharts();
+      if (selectedRep && selectedRep.states) {
+        drawPoseSkeleton(selectedRep.states[selectedPhaseIdx] || selectedRep.states[0]);
+      }
+    });
+
+    // Inicializar con los datos embebidos (reales + 4 ejercicios)
+    allReps = buildReps(DEFAULT_DB_DOCS);
+    populateFilters();
+    applyFiltersAndRender();
+  </script>
+</body>
+</html>
