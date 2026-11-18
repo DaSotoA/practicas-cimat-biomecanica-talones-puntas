@@ -53,14 +53,19 @@ El análisis de concordancia demostró un sesgo prácticamente nulo (+0.05 repet
 
 ---
 
-## ⚙️ Compilación del Motor TensorRT (`hrnet_wb_fp16.engine`)
+## ⚙️ Despliegue en Hardware: Embebido vs Universal
 
-Por motivos de compatibilidad de arquitectura de GPU (hardware-specific), el motor de inferencia TensorRT debe generarse en la propia tarjeta destino.
+El sistema admite dos modalidades de despliegue según el equipo disponible:
 
-> 📖 **Guía completa y detallada paso a paso:**  
-> Consulta el documento [GUIA_GENERAR_ENGINE_TENSORRT.md](GUIA_GENERAR_ENGINE_TENSORRT.md) para ver la preparación de memoria swap, modo 10W (`nvpmodel`), resolución de errores y parámetros óptimos.
+1. **Modo Embebido (NVIDIA Jetson Nano con TensorRT):**
+   - Diseñado para operar de forma autónoma en el borde (*Edge AI*) con la máxima optimización de GPU.
+   - 📖 **Guía completa:** [GUIA_GENERAR_ENGINE_TENSORRT.md](GUIA_GENERAR_ENGINE_TENSORRT.md) *(memoria swap, modo 10W y compilación con `trtexec`)*.
 
-**Comando rápido con `trtexec` en la Jetson Nano:**
+2. **Modo Universal Multiplataforma (Cualquier PC, Laptop, Mac o Linux):**
+   - Diseñado para correr en cualquier equipo común usando **ONNX Runtime** sin necesidad de compilar `.engine` ni depender de una tarjeta Jetson.
+   - 📖 **Guía multiplataforma:** [DESPLIEGUE_UNIVERSAL_MULTIPLATAFORMA.md](DESPLIEGUE_UNIVERSAL_MULTIPLATAFORMA.md) *(configuración para CPU, GPU NVIDIA, Apple Silicon y futuras apps móviles/web)*.
+
+### Comando rápido con `trtexec` en la Jetson Nano:
 ```bash
 /usr/src/tensorrt/bin/trtexec \
   --onnx=hrnet_w48_coco_wholebody.onnx \
