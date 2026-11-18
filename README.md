@@ -55,13 +55,18 @@ El análisis de concordancia demostró un sesgo prácticamente nulo (+0.05 repet
 
 ## ⚙️ Compilación del Motor TensorRT (`hrnet_wb_fp16.engine`)
 
-Por motivos de compatibilidad de arquitectura de GPU, el motor TensorRT debe compilarse en el dispositivo destino. Con el modelo base ONNX descargado en la Jetson, ejecuta:
+Por motivos de compatibilidad de arquitectura de GPU (hardware-specific), el motor de inferencia TensorRT debe generarse en la propia tarjeta destino.
 
+> 📖 **Guía completa y detallada paso a paso:**  
+> Consulta el documento [GUIA_GENERAR_ENGINE_TENSORRT.md](GUIA_GENERAR_ENGINE_TENSORRT.md) para ver la preparación de memoria swap, modo 10W (`nvpmodel`), resolución de errores y parámetros óptimos.
+
+**Comando rápido con `trtexec` en la Jetson Nano:**
 ```bash
 /usr/src/tensorrt/bin/trtexec \
   --onnx=hrnet_w48_coco_wholebody.onnx \
   --saveEngine=hrnet_wb_fp16.engine \
-  --fp16
+  --fp16 \
+  --workspace=1024
 ```
 
 ---
