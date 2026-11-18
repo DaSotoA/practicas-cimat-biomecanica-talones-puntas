@@ -1,0 +1,16 @@
+{
+  "duracion_s": 29.39,
+  "fps_media": 10.244125,
+  "fps_mediana": 8.835,
+  "fps_p5": 6.5285,
+  "fps_min": 5.29,
+  "inferencias_pose_por_s": 13.791683820502264,
+  "camara_fps_media": 28.826124999999998,
+  "infer_ms_media": 83.829625,
+  "infer_ms_p95": 106.606,
+  "cpu_pct_media": 94.10749999999999,
+  "ram_mb_max": 3509.0,
+  "temp_c_max": 28.5,
+  "gpu_pct_media": 38.7325,
+  "fps_sostenida": 8.835
+}

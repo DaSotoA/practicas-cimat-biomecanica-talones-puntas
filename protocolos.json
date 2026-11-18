@@ -1,0 +1,143 @@
+{
+  "configuracion_general": {
+    "descripcion": "Protocolos clinicos unificados (STS, Abduccion de Cadera, Elevacion de Talones y Elevacion de Puntas) adaptados por edad y dia de la semana.",
+    "contar_solo_repeticiones_correctas": false,
+    "auto_cerrar_al_completar_todo": false
+  },
+  "protocolos_por_edad": {
+    "adulto_18_59": {
+      "edad_min": 18,
+      "edad_max": 59,
+      "nivel": "Avanzado",
+      "etiqueta": "Adulto joven / mediana edad (18-59 anos)",
+      "frecuencia_semanal": 3,
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 60,
+      "abd_peak_deg": 45.0,
+      "sts_trunk_max_deg": 30.0,
+      "abd_trunk_max_deg": 15.0,
+      "ejercicios": {
+        "STS": {"series": 3, "repeticiones": 10},
+        "ABD": {"series": 3, "repeticiones": 10},
+        "TALONES": {"series": 3, "repeticiones": 15},
+        "PUNTAS": {"series": 3, "repeticiones": 15}
+      }
+    },
+    "adulto_mayor_60_69": {
+      "edad_min": 60,
+      "edad_max": 69,
+      "nivel": "Intermedio",
+      "etiqueta": "Adulto mayor (60-69 anos)",
+      "frecuencia_semanal": 3,
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 60,
+      "abd_peak_deg": 40.0,
+      "sts_trunk_max_deg": 30.0,
+      "abd_trunk_max_deg": 15.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 10},
+        "ABD": {"series": 2, "repeticiones": 10},
+        "TALONES": {"series": 3, "repeticiones": 12},
+        "PUNTAS": {"series": 3, "repeticiones": 12}
+      }
+    },
+    "adulto_mayor_70_79": {
+      "edad_min": 70,
+      "edad_max": 79,
+      "nivel": "Basico-Intermedio",
+      "etiqueta": "Adulto mayor (70-79 anos)",
+      "frecuencia_semanal": 3,
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 90,
+      "abd_peak_deg": 40.0,
+      "sts_trunk_max_deg": 30.0,
+      "abd_trunk_max_deg": 15.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 8},
+        "ABD": {"series": 2, "repeticiones": 8},
+        "TALONES": {"series": 2, "repeticiones": 10},
+        "PUNTAS": {"series": 2, "repeticiones": 10}
+      }
+    },
+    "adulto_mayor_80_plus": {
+      "edad_min": 80,
+      "edad_max": 120,
+      "nivel": "Basico",
+      "etiqueta": "Adulto mayor longevo / fragil (80+ anos)",
+      "frecuencia_semanal": 2,
+      "dias_asignados": ["lunes", "jueves"],
+      "descanso_entre_series_s": 90,
+      "abd_peak_deg": 35.0,
+      "sts_trunk_max_deg": 30.0,
+      "abd_trunk_max_deg": 15.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 6},
+        "ABD": {"series": 2, "repeticiones": 6},
+        "TALONES": {"series": 2, "repeticiones": 10},
+        "PUNTAS": {"series": 2, "repeticiones": 10}
+      }
+    }
+  },
+  "pacientes": {
+    "Paciente_01": {
+      "edad": 65,
+      "nivel": "Intermedio",
+      "grupo_protocolo": "adulto_mayor_60_69",
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 60,
+      "abd_peak_deg": 40.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 10},
+        "ABD": {"series": 2, "repeticiones": 10},
+        "TALONES": {"series": 3, "repeticiones": 12},
+        "PUNTAS": {"series": 3, "repeticiones": 12}
+      },
+      "progreso_diario": {}
+    },
+    "Juan_Perez": {
+      "edad": 45,
+      "nivel": "Avanzado",
+      "grupo_protocolo": "adulto_18_59",
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 60,
+      "abd_peak_deg": 45.0,
+      "ejercicios": {
+        "STS": {"series": 3, "repeticiones": 10},
+        "ABD": {"series": 3, "repeticiones": 10},
+        "TALONES": {"series": 3, "repeticiones": 15},
+        "PUNTAS": {"series": 3, "repeticiones": 15}
+      },
+      "progreso_diario": {}
+    },
+    "Maria_Lopez": {
+      "edad": 74,
+      "nivel": "Basico-Intermedio",
+      "grupo_protocolo": "adulto_mayor_70_79",
+      "dias_asignados": ["lunes", "miercoles", "viernes"],
+      "descanso_entre_series_s": 90,
+      "abd_peak_deg": 40.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 8},
+        "ABD": {"series": 2, "repeticiones": 8},
+        "TALONES": {"series": 2, "repeticiones": 10},
+        "PUNTAS": {"series": 2, "repeticiones": 10}
+      },
+      "progreso_diario": {}
+    },
+    "Roberto_Gomez": {
+      "edad": 83,
+      "nivel": "Basico",
+      "grupo_protocolo": "adulto_mayor_80_plus",
+      "dias_asignados": ["lunes", "jueves"],
+      "descanso_entre_series_s": 90,
+      "abd_peak_deg": 35.0,
+      "ejercicios": {
+        "STS": {"series": 2, "repeticiones": 6},
+        "ABD": {"series": 2, "repeticiones": 6},
+        "TALONES": {"series": 2, "repeticiones": 10},
+        "PUNTAS": {"series": 2, "repeticiones": 10}
+      },
+      "progreso_diario": {}
+    }
+  }
+}

@@ -1,0 +1,11 @@
+﻿Participante;Ejercicio;Serie Evaluada;Conteo del Sistema (rep);Conteo Observador 1 (rep);Conteo Observador 2 (rep);Promedio Observadores (rep);Diferencia Sistema vs Manual (rep);Cumple Error <= 1 rep
+D13;Elevacion de Talones;Serie 1;7;8;6;7.0;+0.0;Si (Cumple)
+D13;Elevacion de Puntas;Serie 2;7;7;7;7.0;+0.0;Si (Cumple)
+D14;Elevacion de Talones;Serie 1;7;7;7;7.0;+0.0;Si (Cumple)
+D14;Elevacion de Puntas;Serie 2;5;5;5;5.0;+0.0;Si (Cumple)
+D15;Elevacion de Talones;Serie 1;8;7;7;7.0;+1.0;Si (Cumple)
+D15;Elevacion de Puntas;Serie 2;8;8;8;8.0;+0.0;Si (Cumple)
+D16;Elevacion de Talones;Serie 1;7;8;7;7.5;-0.5;Si (Cumple)
+D16;Elevacion de Puntas;Serie 2;9;8;9;8.5;+0.5;Si (Cumple)
+D17;Elevacion de Talones;Serie 1;8;8;8;8.0;+0.0;Si (Cumple)
+D17;Elevacion de Puntas;Serie 2;7;8;7;7.5;-0.5;Si (Cumple)

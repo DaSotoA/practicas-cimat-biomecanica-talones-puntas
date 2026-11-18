@@ -1,0 +1,13 @@
+Timestamp,Ejercicio,Resultado,Motivos_Falla,Metricas_Maximas,Sujeto,Serie_Val,Vista,Iluminacion,Banda
+2026-11-17T13:51:10.114201,Elevacion_Talones,OK,,"{""angulo_max"": 20.4, ""vel_caida_dps"": 15.2}",D14,1,lateral,alta,
+2026-11-17T13:51:14.228410,Elevacion_Talones,OK,,"{""angulo_max"": 21.1, ""vel_caida_dps"": 14.8}",D14,1,lateral,alta,
+2026-11-17T13:51:18.419022,Elevacion_Talones,OK,,"{""angulo_max"": 19.8, ""vel_caida_dps"": 16.1}",D14,1,lateral,alta,
+2026-11-17T13:51:22.605189,Elevacion_Talones,OK,,"{""angulo_max"": 22.0, ""vel_caida_dps"": 15.5}",D14,1,lateral,alta,
+2026-11-17T13:51:26.812490,Elevacion_Talones,OK,,"{""angulo_max"": 20.7, ""vel_caida_dps"": 13.9}",D14,1,lateral,alta,
+2026-11-17T13:51:31.045112,Elevacion_Talones,OK,,"{""angulo_max"": 19.5, ""vel_caida_dps"": 14.2}",D14,1,lateral,alta,
+2026-11-17T13:51:35.290841,Elevacion_Talones,OK,,"{""angulo_max"": 21.3, ""vel_caida_dps"": 15.0}",D14,1,lateral,alta,
+2026-11-17T13:51:52.104512,Elevacion_Puntas,OK,,"{""angulo_max"": 8.2, ""vel_caida_dps"": 9.4}",D14,2,lateral,alta,
+2026-11-17T13:51:57.412098,Elevacion_Puntas,OK,,"{""angulo_max"": 7.8, ""vel_caida_dps"": 8.9}",D14,2,lateral,alta,
+2026-11-17T13:52:02.819402,Elevacion_Puntas,OK,,"{""angulo_max"": 8.5, ""vel_caida_dps"": 10.1}",D14,2,lateral,alta,
+2026-11-17T13:52:08.190344,Elevacion_Puntas,OK,,"{""angulo_max"": 7.6, ""vel_caida_dps"": 9.2}",D14,2,lateral,alta,
+2026-11-17T13:52:13.512890,Elevacion_Puntas,OK,,"{""angulo_max"": 8.1, ""vel_caida_dps"": 9.7}",D14,2,lateral,alta,

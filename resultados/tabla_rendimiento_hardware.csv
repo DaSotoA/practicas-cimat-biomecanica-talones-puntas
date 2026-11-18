@@ -1,0 +1,11 @@
+﻿Metrica de Desempeno en Jetson Nano;Valor Medido;Meta o Referencia
+Velocidad de camara USB (captura);28.8 cuadros/s;30.0 cuadros/s
+Tasa de procesamiento sostenida (mediana);8.84 cuadros/s;>= 8.00 cuadros/s (CUMPLE)
+Tasa de procesamiento promedio (media);10.24 cuadros/s;>= 8.00 cuadros/s (CUMPLE)
+Piso de velocidad (percentil 5);6.53 cuadros/s;>= 5.00 cuadros/s (CUMPLE)
+Tiempo de inferencia TensorRT FP16 (promedio);83.8 ms;< 100 ms por inferencia
+Tiempo de inferencia TensorRT FP16 (percentil 95);106.6 ms;< 120 ms por inferencia
+Uso promedio de procesador (CPU);94.1 %;4 nucleos ARM Cortex-A57
+Uso promedio de tarjeta grafica (GPU);38.7 %;GPU Maxwell 128 nucleos CUDA
+Memoria RAM utilizada (maxima);3509 MB (de 4096 MB);< 3800 MB sin usar swap
+Temperatura maxima del procesador;28.5 C;< 65.0 C (sin estrangulamiento termico)

@@ -1,0 +1,12 @@
+# Tabla 2. Indicadores cuantitativos de exito
+
+| Indicador | Meta | Valor obtenido | Estado |
+|---|---|---|---|
+| Error absoluto medio de conteo por serie | <= 0.50 repeticiones | 0.25 repeticiones | CUMPLE |
+| Series contadas con error <= 1 repeticion | >= 90.0 % | 100.0 % | CUMPLE |
+| F1 macro de clasificacion del ejercicio | >= 0.900 | 0.956 | CUMPLE |
+| Concordancia del rango de movimiento / ciclo (CCI) | >= 0.750 | 0.922 | CUMPLE |
+| Tasa de procesamiento sostenida (cuadros/s) | >= 8.00 cuadros/s | 8.84 cuadros/s | CUMPLE |
+| Piso de tasa de procesamiento (cuadros/s, p5) | >= 5.00 cuadros/s | 6.53 cuadros/s | CUMPLE |
+| Huella del clasificador desplegado (KB) | <= 300.0 KB | 267.0 KB | CUMPLE |
+| Degradacion por cuantizacion / iluminacion (puntos de F1) | <= 2.00 puntos de F1 | 0.00 puntos de F1 | CUMPLE |

@@ -1,0 +1,27 @@
+{
+  "series": 10,
+  "mae_conteo": 0.25,
+  "pct_err_le1": 100.0,
+  "sesgo": 0.05,
+  "icc_conteo": 0.9128630705394195,
+  "tipo_conteo": "total",
+  "icc_interobservador": 0.6769230769230768,
+  "mae_interobservador": 0.5,
+  "por_ejercicio": {
+    "PUNTAS": {
+      "series": 5,
+      "mae": 0.2,
+      "pct_err_le1": 100.0
+    },
+    "TALONES": {
+      "series": 5,
+      "mae": 0.3,
+      "pct_err_le1": 100.0
+    }
+  },
+  "bland_altman_conteo": {
+    "sesgo": 0.05,
+    "de": 0.43779751788545657
+  },
+  "icc_tiempo_ciclo": 0.9315456716272789
+}

@@ -1,0 +1,5 @@
+﻿Modelo Clasificador;F1 Macro (Validacion por Sujeto);Coeficiente MCC;Exactitud (%);Peso del Archivo (KB);Tiempo de Inferencia (ms);Cumple Limite de 300 KB;Estado de Seleccion
+Random Forest (Bosque Aleatorio);0.931;0.889;92.8 %;159.0 KB;2.04 ms;Si;Candidato valido
+SVM con Kernel RBF;0.956;0.931;95.6 %;267.0 KB;0.26 ms;Si;SELECCIONADO (Desplegado)
+Red Neuronal Multicapa (MLP 64x32);0.872;0.809;87.7 %;133.8 KB;0.24 ms;Si;Candidato valido
+XGBoost (Arboles Impulsados);0.926;0.882;92.4 %;69.4 KB;0.35 ms;Si;Candidato valido

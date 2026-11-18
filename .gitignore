@@ -1,0 +1,17 @@
+# Entornos y compilados de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+venv/
+env/
+.pytest_cache/
+
+# Motores TensorRT específicos de hardware
+*.engine
+
+# Archivos temporales de Office y del sistema
+~$*.docx
+~$*.xlsx
+Thumbs.db
+.DS_Store

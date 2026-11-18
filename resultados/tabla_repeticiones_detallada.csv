@@ -1,0 +1,74 @@
+﻿Participante;Serie;Ejercicio;Fecha;Hora;Evaluacion de la Repeticion;Observacion / Motivo;Angulo Maximo de Elevacion del Pie;Velocidad de Descenso;Posicion de Camara;Condicion de Luz
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:34;Valida (OK);Ninguno (Repeticion limpia);18.6 grados;17.0 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:38;Valida (OK);Ninguno (Repeticion limpia);19.0 grados;11.4 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:42;Valida (OK);Ninguno (Repeticion limpia);21.5 grados;11.8 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:46;Con compensacion;Pierna cae bruscamente: controla el descenso;26.4 grados;26.6 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:51;Con compensacion;Pierna cae bruscamente: controla el descenso;28.9 grados;28.4 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:46:59;Valida (OK);Ninguno (Repeticion limpia);15.7 grados;10.7 grados/s;Vista lateral;Luz alta
+D13;Serie 1;Elevacion de Talones;2026-11-17;13:47:05;Valida (OK);Ninguno (Repeticion limpia);25.7 grados;24.1 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:48:42;Valida (OK);Ninguno (Repeticion limpia);8.5 grados;11.5 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:48:46;Valida (OK);Ninguno (Repeticion limpia);9.3 grados;12.1 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:48:50;Valida (OK);Ninguno (Repeticion limpia);8.1 grados;10.8 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:48:55;Valida (OK);Ninguno (Repeticion limpia);9.1 grados;11.6 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:49:00;Valida (OK);Ninguno (Repeticion limpia);8.8 grados;10.5 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:49:05;Valida (OK);Ninguno (Repeticion limpia);7.9 grados;9.8 grados/s;Vista lateral;Luz alta
+D13;Serie 2;Elevacion de Puntas;2026-11-17;13:49:10;Valida (OK);Ninguno (Repeticion limpia);8.4 grados;10.0 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:10;Valida (OK);Ninguno (Repeticion limpia);20.4 grados;15.2 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:14;Valida (OK);Ninguno (Repeticion limpia);21.1 grados;14.8 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:18;Valida (OK);Ninguno (Repeticion limpia);19.8 grados;16.1 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:22;Valida (OK);Ninguno (Repeticion limpia);22.0 grados;15.5 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:26;Valida (OK);Ninguno (Repeticion limpia);20.7 grados;13.9 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:31;Valida (OK);Ninguno (Repeticion limpia);19.5 grados;14.2 grados/s;Vista lateral;Luz alta
+D14;Serie 1;Elevacion de Talones;2026-11-17;13:51:35;Valida (OK);Ninguno (Repeticion limpia);21.3 grados;15.0 grados/s;Vista lateral;Luz alta
+D14;Serie 2;Elevacion de Puntas;2026-11-17;13:51:52;Valida (OK);Ninguno (Repeticion limpia);8.2 grados;9.4 grados/s;Vista lateral;Luz alta
+D14;Serie 2;Elevacion de Puntas;2026-11-17;13:51:57;Valida (OK);Ninguno (Repeticion limpia);7.8 grados;8.9 grados/s;Vista lateral;Luz alta
+D14;Serie 2;Elevacion de Puntas;2026-11-17;13:52:02;Valida (OK);Ninguno (Repeticion limpia);8.5 grados;10.1 grados/s;Vista lateral;Luz alta
+D14;Serie 2;Elevacion de Puntas;2026-11-17;13:52:08;Valida (OK);Ninguno (Repeticion limpia);7.6 grados;9.2 grados/s;Vista lateral;Luz alta
+D14;Serie 2;Elevacion de Puntas;2026-11-17;13:52:13;Valida (OK);Ninguno (Repeticion limpia);8.1 grados;9.7 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:04;Con compensacion;Pierna cae bruscamente: controla el descenso;22.2 grados;28.1 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:07;Valida (OK);Ninguno (Repeticion limpia);19.3 grados;23.5 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:11;Valida (OK);Ninguno (Repeticion limpia);18.2 grados;20.4 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:15;Valida (OK);Ninguno (Repeticion limpia);19.4 grados;18.6 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:18;Valida (OK);Ninguno (Repeticion limpia);18.3 grados;21.4 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:21;Con compensacion;Pierna cae bruscamente: controla el descenso;30.0 grados;29.4 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:25;Valida (OK);Ninguno (Repeticion limpia);17.3 grados;19.2 grados/s;Vista lateral;Luz alta
+D15;Serie 1;Elevacion de Talones;2026-11-17;13:54:28;Valida (OK);Ninguno (Repeticion limpia);15.9 grados;13.6 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:54:41;Valida (OK);Ninguno (Repeticion limpia);17.1 grados;12.9 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:54:45;Valida (OK);Ninguno (Repeticion limpia);9.0 grados;4.2 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:54:49;Con compensacion;Pierna cae bruscamente: controla el descenso;6.0 grados;8.0 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:54:53;Valida (OK);Ninguno (Repeticion limpia);8.4 grados;9.5 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:54:57;Valida (OK);Ninguno (Repeticion limpia);8.9 grados;10.2 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:55:01;Valida (OK);Ninguno (Repeticion limpia);7.8 grados;8.8 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:55:03;Valida (OK);Ninguno (Repeticion limpia);8.1 grados;9.1 grados/s;Vista lateral;Luz alta
+D15;Serie 2;Elevacion de Puntas;2026-11-17;13:55:05;Valida (OK);Ninguno (Repeticion limpia);18.6 grados;12.8 grados/s;Vista lateral;Luz alta
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:56:49;Valida (OK);Ninguno (Repeticion limpia);30.3 grados;17.8 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:56:54;Valida (OK);Ninguno (Repeticion limpia);29.5 grados;11.9 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:56:57;Valida (OK);Ninguno (Repeticion limpia);27.4 grados;13.5 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:57:01;Valida (OK);Ninguno (Repeticion limpia);26.8 grados;12.8 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:57:04;Valida (OK);Ninguno (Repeticion limpia);28.1 grados;14.0 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:57:08;Valida (OK);Ninguno (Repeticion limpia);25.9 grados;11.4 grados/s;Vista obl45;Luz baja
+D16;Serie 1;Elevacion de Talones;2026-11-17;13:57:11;Valida (OK);Ninguno (Repeticion limpia);23.3 grados;6.4 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:22;Con compensacion;Pierna cae bruscamente: controla el descenso;9.5 grados;16.6 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:26;Con compensacion;Pierna cae bruscamente: controla el descenso;7.1 grados;21.9 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:30;Con compensacion;Pierna cae bruscamente: controla el descenso;6.9 grados;10.2 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:33;Con compensacion;Pierna cae bruscamente: controla el descenso;7.3 grados;21.8 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:37;Con compensacion;Pierna cae bruscamente: controla el descenso;7.1 grados;10.1 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:41;Con compensacion;Pierna cae bruscamente: controla el descenso;7.5 grados;11.0 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:45;Con compensacion;Pierna cae bruscamente: controla el descenso;7.3 grados;11.0 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:47;Con compensacion;Pierna cae bruscamente: controla el descenso;6.1 grados;14.4 grados/s;Vista obl45;Luz baja
+D16;Serie 2;Elevacion de Puntas;2026-11-17;13:57:51;Con compensacion;Pierna cae bruscamente: controla el descenso;8.0 grados;12.3 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:24;Valida (OK);Ninguno (Repeticion limpia);21.9 grados;16.1 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:27;Valida (OK);Ninguno (Repeticion limpia);20.6 grados;14.1 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:31;Valida (OK);Ninguno (Repeticion limpia);24.5 grados;14.5 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:35;Valida (OK);Ninguno (Repeticion limpia);27.2 grados;17.9 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:39;Valida (OK);Ninguno (Repeticion limpia);24.0 grados;15.9 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:42;Valida (OK);Ninguno (Repeticion limpia);22.8 grados;16.6 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:46;Valida (OK);Ninguno (Repeticion limpia);23.1 grados;14.2 grados/s;Vista obl45;Luz baja
+D17;Serie 1;Elevacion de Talones;2026-11-17;13:59:50;Valida (OK);Ninguno (Repeticion limpia);23.1 grados;17.6 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:02;Con compensacion;Pierna cae bruscamente: controla el descenso;8.4 grados;12.8 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:07;Valida (OK);Ninguno (Repeticion limpia);6.9 grados;9.0 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:10;Valida (OK);Ninguno (Repeticion limpia);6.9 grados;6.5 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:14;Con compensacion;Pierna cae bruscamente: controla el descenso;6.8 grados;9.8 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:18;Valida (OK);Ninguno (Repeticion limpia);9.0 grados;10.7 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:24;Con compensacion;Pierna cae bruscamente: controla el descenso;6.8 grados;9.9 grados/s;Vista obl45;Luz baja
+D17;Serie 2;Elevacion de Puntas;2026-11-17;14:00:29;Valida (OK);Ninguno (Repeticion limpia);6.8 grados;8.9 grados/s;Vista obl45;Luz baja

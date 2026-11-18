@@ -1,0 +1,45 @@
+{
+  "mejor_vista": "frontal",
+  "tabla": [
+    {
+      "vista": "frontal",
+      "vis_pct": 100.0,
+      "err_sagital_deg": 1.3990123456790124,
+      "err_frontal_deg": 2.3709876543209876,
+      "err_conjunto_deg": 1.9466404393601855,
+      "inclinacion_tronco_deg": 1.364567901234568,
+      "jitter_rodilla_deg": 0.525432098765432,
+      "muestras": 81
+    },
+    {
+      "vista": "obl30",
+      "vis_pct": 100.0,
+      "err_sagital_deg": 4.323779527559055,
+      "err_frontal_deg": 3.8671653543307087,
+      "err_conjunto_deg": 4.101831132596426,
+      "inclinacion_tronco_deg": 3.405748031496063,
+      "jitter_rodilla_deg": 0.3379527559055118,
+      "muestras": 127
+    },
+    {
+      "vista": "obl45",
+      "vis_pct": 100.0,
+      "err_sagital_deg": 6.539382716049383,
+      "err_frontal_deg": 2.468024691358025,
+      "err_conjunto_deg": 4.942401854570219,
+      "inclinacion_tronco_deg": 5.682592592592593,
+      "jitter_rodilla_deg": 0.6998765432098765,
+      "muestras": 81
+    },
+    {
+      "vista": "lateral",
+      "vis_pct": 100.0,
+      "err_sagital_deg": 10.616315789473685,
+      "err_frontal_deg": 1.5733684210526315,
+      "err_conjunto_deg": 7.588861875478889,
+      "inclinacion_tronco_deg": 1.074105263157895,
+      "jitter_rodilla_deg": 1.0066666666666668,
+      "muestras": 95
+    }
+  ]
+}

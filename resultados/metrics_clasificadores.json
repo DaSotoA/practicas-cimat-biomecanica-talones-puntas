@@ -1,0 +1,63 @@
+{
+  "ventanas": 1267,
+  "sujetos": 12,
+  "modelo_seleccionado": "SVM-RBF",
+  "f1_macro": 0.9563004235253807,
+  "mcc": 0.9314084577747702,
+  "peso_kb": 267.0,
+  "latencia_ms": 0.26,
+  "importancia_permutacion": {
+    "foot_pitch_deg": 0.22215682503803813,
+    "tibiotarsal_deg": 0.1411892241103453,
+    "heel_toe_dy_norm": 0.1738620662517577,
+    "foot_omega_dps": 0.04757788496666892,
+    "knee_flexion": 0.09668840077451296,
+    "trunk_lean": 0.09830993898528
+  },
+  "tabla": [
+    {
+      "modelo": "RandomForest",
+      "f1_macro": 0.9308052540916177,
+      "mcc": 0.8888074006230291,
+      "exactitud": 0.9281767955801105,
+      "peso_kb": 159.0,
+      "latencia_ms": 2.04,
+      "cumple_300kb": true,
+      "config": {
+        "n_estimators": 60,
+        "max_depth": 12,
+        "min_samples_leaf": 3
+      }
+    },
+    {
+      "modelo": "SVM-RBF",
+      "f1_macro": 0.9563004235253807,
+      "mcc": 0.9314084577747702,
+      "exactitud": 0.9558011049723757,
+      "peso_kb": 267.0,
+      "latencia_ms": 0.26,
+      "cumple_300kb": true,
+      "config": {}
+    },
+    {
+      "modelo": "MLP",
+      "f1_macro": 0.8721351548750058,
+      "mcc": 0.8091213637474989,
+      "exactitud": 0.8768745067087609,
+      "peso_kb": 133.8,
+      "latencia_ms": 0.24,
+      "cumple_300kb": true,
+      "config": {}
+    },
+    {
+      "modelo": "XGBoost",
+      "f1_macro": 0.9256552830982406,
+      "mcc": 0.8823639695094306,
+      "exactitud": 0.9242304656669298,
+      "peso_kb": 69.4,
+      "latencia_ms": 0.35,
+      "cumple_300kb": true,
+      "config": {}
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+﻿Posicion de Camara;Angulo de Camara;Visibilidad Articular (%);Error Sagital Rodilla (grados);Error Frontal Cadera (grados);Error Angular Conjunto (grados);Inclinacion Tronco (grados);Variacion / Jitter (grados);Cuadros Evaluados;Resultado
+Vista Frontal;0 grados;100.0 %;1.40 grados;2.37 grados;1.95 grados;1.36 grados;0.53 grados;81 cuadros;Menor error conjunto
+Vista Oblicua 30;30 grados;100.0 %;4.32 grados;3.87 grados;4.10 grados;3.41 grados;0.34 grados;127 cuadros;Evaluada
+Vista Oblicua 45;45 grados;100.0 %;6.54 grados;2.47 grados;4.94 grados;5.68 grados;0.70 grados;81 cuadros;Evaluada
+Vista Lateral (Perfil);90 grados;100.0 %;10.62 grados;1.57 grados;7.59 grados;1.07 grados;1.01 grados;95 cuadros;Evaluada

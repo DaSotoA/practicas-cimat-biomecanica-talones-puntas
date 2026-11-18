@@ -1,0 +1,8 @@
+numpy
+opencv-python  # en JetPack ya viene con GStreamer: usar el del sistema
+scikit-learn==0.24.2  # JetPack 4.6 / Python 3.6
+joblib
+redis  # opcional (--db redis); sin el, usa JSONL
+# Analisis (PC o Jetson): matplotlib, xgboost (opcional), python-docx (solo para generar formatos)
+# Ya instalados en JetPack: pycuda, tensorrt
+# Falta copiar a mano: hrnet_wb_fp16.engine (y exercise_clf.joblib tras entrenar)
